@@ -2,7 +2,11 @@ use inc::Module::Install;
 name 'Nephia';
 all_from 'lib/Nephia.pm';
 
-# requires '';
+requires 'Exporter';
+requires 'Plack';
+requires 'JSON';
+requires 'Text::Xslate';
+requires 'Class::Load';
 
 tests 't/*.t';
 author_tests 'xt';
