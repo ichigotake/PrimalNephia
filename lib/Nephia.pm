@@ -10,7 +10,6 @@ use Plack::Builder;
 use Plack::App::URLMap;
 use Text::Xslate;
 use JSON ();
-use Class::Load;
 
 our $VERSION = '0.01';
 our @EXPORT = qw( path res run composit );
@@ -89,14 +88,6 @@ sub render {
         ],
         [ $body ]
     ];
-}
-
-sub composit (@) {
-    map { 
-        Class::Load::load_class( $_ ) unless 
-            Class::Load::is_class_loaded( $_ )
-        ;
-    } @_;
 }
 
 1;

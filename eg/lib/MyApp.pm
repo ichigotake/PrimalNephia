@@ -4,10 +4,8 @@ use warnings;
 use strict;
 use Nephia;
 
-composit qw( 
-    MyApp::Root
-    MyApp::Foo
-    MyApp::Oreore
-);
+use MyApp::Root;
+use MyApp::Foo;
+use MyApp::Oreore;
 
 1;

@@ -6,7 +6,6 @@ requires 'Exporter';
 requires 'Plack';
 requires 'JSON';
 requires 'Text::Xslate';
-requires 'Class::Load';
 
 tests 't/*.t';
 author_tests 'xt';
