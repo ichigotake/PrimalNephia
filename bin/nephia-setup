@@ -4,5 +4,12 @@ use strict;
 use warnings;
 use Nephia::Setup;
 
-Nephia::Setup::create( shift @ARGV );
+my $class = shift @ARGV;
+$class ? Nephia::Setup::create( $class ) : help();
 
+sub help {
+    print <<EOF;
+Usage: 
+nephia-setup [AppName]
+EOF
+}
