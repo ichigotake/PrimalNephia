@@ -95,15 +95,20 @@ __END__
 
 =head1 NAME
 
-Nephia - 
+Nephia - Mini WAF
 
 =head1 SYNOPSIS
 
-  use Nephia;
+  ### Get started the Nephia!
+  $ nephia-setup MyApp
+  
+  ### And, plackup it!
+  $ cd myapp
+  $ plackup
 
 =head1 DESCRIPTION
 
-Nephia is
+Nephia is a mini web-application framework.
 
 =head1 AUTHOR
 

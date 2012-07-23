@@ -1,0 +1,29 @@
+=head1 NAME
+
+Nephia - Mini WAF
+
+=head1 SYNOPSIS
+
+  ### Get started the Nephia!
+  $ nephia-setup MyApp
+  
+  ### And, plackup it!
+  $ cd myapp
+  $ plackup
+
+=head1 DESCRIPTION
+
+Nephia is a mini web-application framework.
+
+=head1 AUTHOR
+
+ytnobody E<lt>ytnobody@gmail.comE<gt>
+
+=head1 SEE ALSO
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
