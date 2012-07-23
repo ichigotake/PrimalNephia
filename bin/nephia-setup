@@ -1,0 +1,8 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Nephia::Setup;
+
+Nephia::Setup::create( shift @ARGV );
+

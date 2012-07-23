@@ -7,6 +7,11 @@ requires 'Plack';
 requires 'JSON';
 requires 'Text::Xslate';
 
+requires 'Path::Class' => 0.26;
+requires 'Cwd';
+requires 'File::Spec';
+requires 'String::CamelCase';
+
 tests 't/*.t';
 author_tests 'xt';
 
