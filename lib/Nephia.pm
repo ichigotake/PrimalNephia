@@ -9,6 +9,7 @@ use Plack::Builder;
 use Plack::App::URLMap;
 use Text::Xslate;
 use JSON ();
+use FindBin;
 
 our $VERSION = '0.01';
 our @EXPORT = qw( path res run );
@@ -29,6 +30,7 @@ sub path ($&) {
             ;
         }
         elsif ( ref $res eq 'Plack::Response' ) {
+            $res->content_length( length( $res->content ) );
             return $res->finalize;
         }
         else {
@@ -61,9 +63,9 @@ sub res (&) {
 }
 
 sub run {
-    $VIEW = Text::Xslate->new(
-        path => [ './view' ]
-    );
+    my ( $class, %options ) = @_;
+    $options{view}->{path} ||= [ "$FindBin::Bin/view" ];
+    $VIEW = Text::Xslate->new( %{$options{view}} );
     return builder { 
         enable "Static", root => "./root/", path => qr{^/static/};
         $MAPPER->to_app;
