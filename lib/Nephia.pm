@@ -1,5 +1,4 @@
 package Nephia;
-@ISA = qw( Exporter );
 use strict;
 use warnings;
 
