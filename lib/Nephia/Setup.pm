@@ -120,6 +120,7 @@ sub index_template_file {
     return <<EOF;
 <html>
 <head>
+  <link rel="shortcut icon" href="/static/favicon.ico" />
   <title><: \$title :> - powerd by Nephia</title>
 </head>
 <body>
