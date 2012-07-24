@@ -170,6 +170,18 @@ ytnobody E<lt>ytnobody@gmail.comE<gt>
 
 =head1 SEE ALSO
 
+Plack::Request
+
+Plack::Response
+
+Plack::Builder
+
+Text::Xslate
+
+Text::Xslate::Syntax::Kolon
+
+JSON
+
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify
