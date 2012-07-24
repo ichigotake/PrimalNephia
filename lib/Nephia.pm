@@ -47,7 +47,7 @@ sub res (&) {
         my $caller = caller();
         map { 
             my $method = $_;
-            *{$caller.'::'.$method} = sub { 
+            *{$caller.'::'.$method} = sub (@) { 
                 return $res->$method( @_ );
             };
         } qw( 
@@ -64,7 +64,10 @@ sub run {
     $VIEW = Text::Xslate->new(
         path => [ './view' ]
     );
-    return builder { $MAPPER->to_app };
+    return builder { 
+        enable "Static", root => "./root/", path => qr{^/static/};
+        $MAPPER->to_app;
+    };
 }
 
 sub json_res {
@@ -108,6 +111,58 @@ Nephia - Mini WAF
 =head1 DESCRIPTION
 
 Nephia is a mini web-application framework.
+
+=head1 MOUNT A CONTROLLER
+
+Use "path" function as following in lib/MyApp.pm . 
+
+First argument is path for mount a controller. This must be string.
+
+Second argument is controller-logic. This must be code-reference.
+
+In controller-logic, you may get Plack::Request object as first-argument, 
+and controller-logic must return response-value as hash-reference or Plack::Response object.
+
+=head2 Basic controller - Makes JSON response
+
+Look this examples.
+
+  path '/foobar' => sub {
+      my ( $req ) = @_;
+      return {
+          name => 'MyApp',
+          query => $req->param('q'),
+      };
+  };
+
+This controller outputs response-value as JSON, and will be mounted on "/foobar".
+
+=head2 Use templates - Render with Xslate (Kolon-syntax)
+
+  path '/' => sub {
+      return {
+          template => 'index.tx',
+          title => 'Welcome to my homepage!',
+      };
+  };
+
+Attention to "template" attribute. 
+If you specified it, controller searches template file from view-directory and render it.
+
+=head2 Makes any response - Using "res" function
+
+  path '/my-javascript' => sub {
+      return res {
+          content_type( 'text/javascript' );
+          body( 'alert("Oreore!");' );
+      };
+  };
+
+"res" function returns Plack::Response object with customisable DSL-like syntax.
+
+=head1 Static-contents ( like as images, javascripts... )
+
+You can look static-files that is into root directory via HTTP.
 
 =head1 AUTHOR
 

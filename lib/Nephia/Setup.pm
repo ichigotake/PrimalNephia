@@ -13,7 +13,7 @@ sub create {
     $approot->mkpath( 1, 0755 );
     map {
         $approot->subdir($_)->mkpath( 1, 0755 );
-    } qw( lib etc view root t );
+    } qw( lib etc view root root/static t );
 
     $approot->file('app.psgi')->spew(
         psgi_file( $class )
