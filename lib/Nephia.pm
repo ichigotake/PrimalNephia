@@ -11,7 +11,7 @@ use Text::Xslate;
 use JSON ();
 
 our $VERSION = '0.01';
-our @EXPORT = qw( path res run composit );
+our @EXPORT = qw( path res run );
 our $MAPPER = Plack::App::URLMap->new;
 our $VIEW;
 
