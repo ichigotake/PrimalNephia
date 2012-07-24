@@ -2,9 +2,11 @@ use strict;
 use warnings;
 use Test::More;
 use Plack::Test;
-use Nephia::TestApp;
 use HTTP::Request::Common;
 use JSON;
+
+use lib qw( ./t/nephia-test_app/lib );
+use Nephia::TestApp;
 use t::Util;
 
 test_psgi 
