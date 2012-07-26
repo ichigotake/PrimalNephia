@@ -116,6 +116,7 @@ sub index_template_file {
 <html>
 <head>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
   <link rel="shortcut icon" href="/static/favicon.ico" />
   <title><: \$title :> - powerd by Nephia</title>
 </head>
