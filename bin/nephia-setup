@@ -4,12 +4,12 @@ use strict;
 use warnings;
 use Nephia::Setup;
 
-my $class = shift @ARGV;
-$class ? Nephia::Setup::create( $class ) : help();
+my( $class, $flavor ) = @ARGV;
+$class ? Nephia::Setup::create( $class, $flavor ) : help();
 
 sub help {
     print <<EOF;
 Usage: 
-nephia-setup [AppName]
+nephia-setup AppName [flavor]
 EOF
 }
