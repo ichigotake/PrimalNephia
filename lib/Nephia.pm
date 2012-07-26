@@ -67,7 +67,7 @@ sub run {
     $options{view}->{path} ||= [ "$FindBin::Bin/view" ];
     $VIEW = Text::Xslate->new( %{$options{view}} );
     return builder { 
-        enable "Static", root => "./root/", path => qr{^/static/};
+        enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
         $MAPPER->to_app;
     };
 }
