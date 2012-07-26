@@ -4,7 +4,6 @@ use warnings;
 use File::Spec;
 use Path::Class;
 use Cwd;
-use String::CamelCase qw( decamelize );
 
 sub create {
     my ( $class ) = @_;
@@ -45,12 +44,7 @@ sub create {
 sub approot {
     my ( $class ) = @_;
     $class =~ s/::/-/g;
-    return dir(
-        File::Spec->catfile( 
-            getcwd(),
-            decamelize($class), 
-        )
-    );
+    return dir( File::Spec->catfile( getcwd(), $class ) );
 }
 
 sub psgi_file {
