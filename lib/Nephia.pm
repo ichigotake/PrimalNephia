@@ -7,7 +7,7 @@ use Plack::Request;
 use Plack::Response;
 use Plack::Builder;
 use Plack::App::URLMap;
-use Text::Xslate;
+use Nephia::View;
 use JSON ();
 use FindBin;
 
@@ -64,8 +64,7 @@ sub res (&) {
 
 sub run {
     my ( $class, %options ) = @_;
-    $options{view}->{path} ||= [ "$FindBin::Bin/view" ];
-    $VIEW = Text::Xslate->new( %{$options{view}} );
+    $VIEW = Nephia::View->new( %{$options{view}} );
     return builder { 
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
         $MAPPER->to_app;
