@@ -27,7 +27,7 @@ $setup->create( $appname );
 sub help {
     print <<EOF;
 Usage: 
-nephia-setup AppName [--with SomeRoleClass,AnyRoleClass...]
+nephia-setup AppName [--view (Xslate or something)] [--with SomeRoleClass,AnyRoleClass...]
 EOF
     exit;
 }
