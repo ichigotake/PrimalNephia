@@ -3,13 +3,31 @@
 use strict;
 use warnings;
 use Nephia::Setup;
+use Getopt::Long;
 
-my( $class, $flavor ) = @ARGV;
-$class ? Nephia::Setup::create( $class, $flavor ) : help();
+my $appname = shift @ARGV || '';
+help() unless $appname =~ /^\w+/;
+
+my $view = 'Xslate';
+my $rolestr = '';
+
+GetOptions(
+    "view=s" => \$view,
+    "with=s" => \$rolestr,
+);
+
+my @roles = split /,/, $rolestr;
+
+my $setup = Nephia::Setup->new(
+    view => $view,
+    roles => \@roles,
+);
+$setup->create( $appname );
 
 sub help {
     print <<EOF;
 Usage: 
-nephia-setup AppName [flavor]
+nephia-setup AppName [--with SomeRoleClass,AnyRoleClass...]
 EOF
+    exit;
 }
