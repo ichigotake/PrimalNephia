@@ -10,7 +10,6 @@ use Carp;
 sub new {
     my ( $class, %opts ) = @_;
     my $self = bless { %opts }, $class;
-    try_load_class( 'Nephia::View::'. $self->{view} ) or Carp::croak( sprintf('Could not load view class %s', $self->{view}) );
 
     $self->{roles} ||= [];
     map { load_class( 'Nephia::Setup::'.$_ ) } @{$self->{roles}};
@@ -27,7 +26,7 @@ sub create {
         $approot->subdir($_)->mkpath( 1, 0755 );
     } qw( lib etc view root root/static t );
 
-    psgi_file( $approot, $appname, $self->{view} );
+    psgi_file( $approot, $appname );
 
     my @apppath = split(/::/, $appname. '.pm');
     my $appfile = pop( @apppath );
@@ -49,7 +48,7 @@ sub approot {
 }
 
 sub psgi_file {
-    my ( $approot, $appname, $viewclass ) = @_;
+    my ( $approot, $appname ) = @_;
     my $body = <<EOF;
 use strict;
 use warnings;
@@ -57,9 +56,7 @@ use FindBin;
 
 use lib ("\$FindBin::Bin/lib", "\$FindBin::Bin/extlib/lib/perl5");
 use $appname;
-$appname->run( view => { 
-    class => '$viewclass',
-} );
+$appname->run;
 EOF
     $approot->file( 'app.psgi' )->spew( $body );
 }
