@@ -10,8 +10,7 @@ use Carp;
 sub new {
     my ( $class, %opts ) = @_;
     my $self = bless { %opts }, $class;
-    $self->{view} = join '::', 'Nephia::View', $self->{view};
-    try_load_class( $self->{view} ) or Carp::croak( sprintf('Could not load view class %s', $self->{view}) );
+    try_load_class( 'Nephia::View::'. $self->{view} ) or Carp::croak( sprintf('Could not load view class %s', $self->{view}) );
 
     $self->{roles} ||= [];
     map { load_class( 'Nephia::Setup::'.$_ ) } @{$self->{roles}};
