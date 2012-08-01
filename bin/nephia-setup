@@ -8,23 +8,22 @@ use Getopt::Long;
 my $appname = shift @ARGV || '';
 help() unless $appname =~ /^\w+/;
 
-my $rolestr = '';
+my $flavor = 'Default';
 
 GetOptions(
-    "with=s" => \$rolestr,
+    "flavor=s" => \$flavor,
 );
-
-my @roles = split /,/, $rolestr;
 
 my $setup = Nephia::Setup->new(
-    roles => \@roles,
+    flavor => $flavor,
+    appname => $appname,
 );
-$setup->create( $appname );
+$setup->create;
 
 sub help {
     print <<EOF;
 Usage: 
-nephia-setup AppName [--with SomeRoleClass,AnyRoleClass...]
+nephia-setup AppName [--flavor Flavor::Name]
 EOF
     exit;
 }
