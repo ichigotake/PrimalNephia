@@ -98,8 +98,6 @@ sub render {
     ];
 }
 
-use Data::Dumper;
-
 sub validate (%) {
     my $caller = caller();
     no strict qw/ refs subs /;
