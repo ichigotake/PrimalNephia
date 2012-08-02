@@ -2,8 +2,11 @@ package Nephia::TestApp;
 use strict;
 use warnings;
 use Nephia;
+use Mouse::Util::TypeConstraints;
 
 our $VERSION = 0.01;
+
+enum 'Sex' => qw( male female shemale );
 
 path '/' => sub {
     return {
@@ -13,8 +16,7 @@ path '/' => sub {
 };
 
 path '/json' => sub {
-    my $req = shift;
-    my $query = $req->param('q');
+    my $query = req->param('q');
     return $query ? 
         { query => $query, message => 'Query OK' } :
         { message => 'Please input a query' }
@@ -26,6 +28,14 @@ path '/direct/js' => sub {
         content_type( 'text/javascript' );
         body('console.log("foobar");');
     };
+};
+
+path '/validate' => sub {
+    return validate 
+        name => { isa => 'Str' },
+        age => { isa => 'Int', default => 72 },
+        sex => { isa => 'Sex', default => 'shemale'}
+    ;
 };
 
 1;

@@ -10,21 +10,26 @@ use Plack::App::URLMap;
 use Nephia::View;
 use JSON ();
 use FindBin;
+use Data::Validator;
 
 our $VERSION = '0.01';
-our @EXPORT = qw( path res run );
+our @EXPORT = qw( path req res run validate );
 our $MAPPER = Plack::App::URLMap->new;
 our $VIEW;
 
 sub path ($&) {
     my ( $path, $code ) = @_;
 
+    my $caller = caller();
     $MAPPER->map( $path => sub {
         my $env = shift;
         my $req = Plack::Request->new( $env );
+        no strict qw/ refs subs /;
+        no warnings qw/ redefine /;
+        local *{$caller."::req"} = sub{ $req };
         my $res = $code->( $req );
         if ( ref $res eq 'HASH' ) {
-            return $res->{template} ? 
+            return eval { $res->{template} } ? 
                 render( $res ) : 
                 json_res( $res )
             ;
@@ -93,6 +98,17 @@ sub render {
     ];
 }
 
+use Data::Dumper;
+
+sub validate (%) {
+    my $caller = caller();
+    no strict qw/ refs subs /;
+    no warnings qw/ redefine /;
+    my $req = *{$caller.'::req'};
+    my $validator = Data::Validator->new(@_);
+    return $validator->validate( $req->()->parameters->as_hashref_mixed );
+}
+
 1;
 __END__
 
@@ -130,6 +146,9 @@ Look this examples.
 
   path '/foobar' => sub {
       my ( $req ) = @_;
+      # Yet another syntax is following.
+      # my $req = req;
+  
       return {
           name => 'MyApp',
           query => $req->param('q'),
@@ -161,9 +180,40 @@ If you specified it, controller searches template file from view-directory and r
 
 "res" function returns Plack::Response object with customisable DSL-like syntax.
 
-=head1 Static-contents ( like as images, javascripts... )
+=head1 STATIC CONTENTS ( like as images, javascripts... )
 
 You can look static-files that is into root directory via HTTP.
+
+=head1 VALIDATE PARAMETERS
+
+You may use validator with validate function.
+
+  path '/some/path' => sub {
+      my $params = validate
+          name => { isa => 'Str', default => 'Nameless John' },
+          age => { isa => 'Int' }
+      ;
+  };
+
+See documentation of validate method and Data::Validator.
+
+=head1 FUNCTIONS
+
+=head2 path $path, $coderef_as_controller;
+
+Mount controller on specified path.
+
+=head2 req
+
+Return Plack::Request object. You can call this function in coderef that is argument of path().
+
+=head2 res $coderef
+
+Return Plack::Response object with customisable DSL-like syntax.
+
+=head2 validate %validation_rules
+
+Return validated parameters as hashref. You have to set validation rule as like as Data::Validator's instantiate arguments.
 
 =head1 AUTHOR
 
@@ -182,6 +232,8 @@ Text::Xslate
 Text::Xslate::Syntax::Kolon
 
 JSON
+
+Data::Validator
 
 =head1 LICENSE
 

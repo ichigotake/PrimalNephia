@@ -6,6 +6,7 @@ requires 'Exporter';
 requires 'Plack';
 requires 'JSON';
 requires 'Text::Xslate';
+requires 'Data::Validate';
 
 requires 'Path::Class' => 0.26;
 requires 'Cwd';
