@@ -16,6 +16,7 @@ tests 't/*.t';
 author_tests 'xt';
 
 test_requires 'Test::More';
+test_requires 'Mouse::Util::TypeConstraints';
 
 install_script 'bin/nephia-setup';
 
