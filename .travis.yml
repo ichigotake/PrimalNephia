@@ -5,8 +5,9 @@ perl:
   - "5.12"
   - "5.10"
 notifications:
-  irc: channels:
-    - "irc.freenode.net#ytnobody"
-  on_success: change
-  on_failure: always
+  irc:
+    channels:
+      - "irc.freenode.net#ytnobody"
+    on_success: change
+    on_failure: always
 
