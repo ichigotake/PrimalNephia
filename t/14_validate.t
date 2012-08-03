@@ -23,7 +23,10 @@ test_psgi
                 my $res = $cb->(GET $uri);
                 for my $key ( keys %{$opts{expect}} ) {
                     if ( $key eq 'content' ) {
-                        like $res->$key, $opts{expect}->{$key}, "$key like ".$opts{expect}->{$key};
+                        $res->content_type eq 'application/json' ?
+                            is_deeply( JSON->new->decode( $res->$key ), $opts{expect}->{$key} ):
+                            like( $res->$key, $opts{expect}->{$key}, "$key like ".$opts{expect}->{$key} )
+                        ;
                     }
                     else {
                         is $res->$key, $opts{expect}->{$key}, "$key is ".$opts{expect}->{$key};
@@ -37,7 +40,7 @@ test_psgi
                 query => { name => 'Borgira', sex => 'female', age => 22 },
                 expect => { %expect_basic, 
                     content_length => 44, 
-                    content => qr[{"name":"Borgira","sex":"female","age":"22"}]
+                    content => { name => "Borgira", sex => "female", age => 22 }
                 }
             );
 
@@ -45,7 +48,7 @@ test_psgi
                 query => { name => 'Johnny' },
                 expect => { %expect_basic, 
                     content_length => 42, 
-                    content => qr[{"name":"Johnny","sex":"shemale","age":72}]
+                    content => { name => "Johnny", sex => "shemale", age => 72 }
                 }
             );
 

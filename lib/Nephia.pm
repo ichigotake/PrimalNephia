@@ -104,7 +104,7 @@ sub validate (%) {
     no warnings qw/ redefine /;
     my $req = *{$caller.'::req'};
     my $validator = Data::Validator->new(@_);
-    return $validator->validate( $req->()->parameters->as_hashref_mixed );
+    return $validator->validate( %{$req->()->parameters->as_hashref_mixed} );
 }
 
 1;
