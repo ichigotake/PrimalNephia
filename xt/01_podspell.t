@@ -15,3 +15,5 @@ Kolon
 Xslate
 customisable
 javascripts
+req
+validator
