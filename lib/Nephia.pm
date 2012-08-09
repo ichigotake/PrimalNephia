@@ -35,7 +35,6 @@ sub path ($&) {
             ;
         }
         elsif ( ref $res eq 'Plack::Response' ) {
-            $res->content_length( length( $res->content ) );
             return $res->finalize;
         }
         else {
@@ -71,6 +70,7 @@ sub run {
     my ( $class, %options ) = @_;
     $VIEW = Nephia::View->new( %{$options{view}} );
     return builder { 
+        enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
         $MAPPER->to_app;
     };
@@ -80,9 +80,7 @@ sub json_res {
     my $res = shift;
     my $body = JSON->new->utf8->encode( $res );
     return [ 200, 
-        [ 'Content-type' => 'application/json', 
-          'Content-length' => length $body 
-        ],
+        [ 'Content-type' => 'application/json' ],
         [ $body ]
     ];
 }
@@ -91,9 +89,7 @@ sub render {
     my $res = shift;
     my $body = $VIEW->render( $res->{template}, $res );
     return [ 200,
-        [ 'Content-type' => 'text/html; charset=UTF-8',
-          'Content-length' => length $body
-        ],
+        [ 'Content-type' => 'text/html; charset=UTF-8' ],
         [ $body ]
     ];
 }
