@@ -13,9 +13,10 @@ use FindBin;
 use Data::Validator;
 
 our $VERSION = '0.01';
-our @EXPORT = qw( path req res run validate );
+our @EXPORT = qw( path req res run validate config );
 our $MAPPER = Plack::App::URLMap->new;
 our $VIEW;
+our $CONFIG = {};
 
 sub path ($&) {
     my ( $path, $code ) = @_;
@@ -68,6 +69,7 @@ sub res (&) {
 
 sub run {
     my ( $class, %options ) = @_;
+    $CONFIG = { %options };
     $VIEW = Nephia::View->new( %{$options{view}} );
     return builder { 
         enable "ContentLength";
@@ -102,6 +104,17 @@ sub validate (%) {
     my $validator = Data::Validator->new(@_);
     return $validator->validate( %{$req->()->parameters->as_hashref_mixed} );
 }
+
+sub config (@) {
+    if ( scalar @_ > 0 ) {
+        $CONFIG = 
+            scalar @_ > 1 ? { @_ } : 
+            ref $_[0] eq 'HASH' ? $_[0] :
+            do( $_[0] )
+        ;
+    }
+    return $CONFIG;
+};
 
 1;
 __END__

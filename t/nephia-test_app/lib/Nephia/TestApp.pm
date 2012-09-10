@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Nephia;
 use Mouse::Util::TypeConstraints;
+use Data::Dumper;
 
 our $VERSION = 0.01;
 
@@ -36,6 +37,10 @@ path '/validate' => sub {
         age => { isa => 'Int', default => 72 },
         sex => { isa => 'Sex', default => 'shemale'}
     ;
+};
+
+path '/configtest' => sub {
+    return config;
 };
 
 1;
