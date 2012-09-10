@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use Nephia;
 use Mouse::Util::TypeConstraints;
-use Data::Dumper;
 
 our $VERSION = 0.01;
 
