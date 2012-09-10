@@ -13,7 +13,7 @@ use FindBin;
 use Data::Validator;
 
 our $VERSION = '0.01';
-our @EXPORT = qw( path req res run validate config );
+our @EXPORT = qw[ path req res run validate config ];
 our $MAPPER = Plack::App::URLMap->new;
 our $VIEW;
 our $CONFIG = {};
@@ -25,8 +25,8 @@ sub path ($&) {
     $MAPPER->map( $path => sub {
         my $env = shift;
         my $req = Plack::Request->new( $env );
-        no strict qw/ refs subs /;
-        no warnings qw/ redefine /;
+        no strict qw[ refs subs ];
+        no warnings qw[ redefine ];
         local *{$caller."::req"} = sub{ $req };
         my $res = $code->( $req );
         if ( ref $res eq 'HASH' ) {
@@ -49,19 +49,19 @@ sub res (&) {
     my $res = Plack::Response->new(200);
     $res->content_type('text/html');
     {
-        no strict qw( refs subs );
-        no warnings qw( redefine );
+        no strict qw[ refs subs ];
+        no warnings qw[ redefine ];
         my $caller = caller();
         map { 
             my $method = $_;
             *{$caller.'::'.$method} = sub (@) { 
                 return $res->$method( @_ );
             };
-        } qw( 
+        } qw[ 
             status headers body header
             content_type content_length
             content_encoding redirect cookies
-        );
+        ];
         $code->();
     }
     return $res;
@@ -98,8 +98,8 @@ sub render {
 
 sub validate (%) {
     my $caller = caller();
-    no strict qw/ refs subs /;
-    no warnings qw/ redefine /;
+    no strict qw[ refs subs ];
+    no warnings qw[ redefine ];
     my $req = *{$caller.'::req'};
     my $validator = Data::Validator->new(@_);
     return $validator->validate( %{$req->()->parameters->as_hashref_mixed} );
