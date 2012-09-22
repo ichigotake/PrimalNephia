@@ -7,6 +7,7 @@ requires 'Plack';
 requires 'JSON';
 requires 'Text::Xslate';
 requires 'Data::Validator';
+requires 'Class::Load';
 
 requires 'Path::Class' => 0.26;
 requires 'Cwd';
