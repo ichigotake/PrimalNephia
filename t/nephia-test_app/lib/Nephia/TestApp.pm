@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Nephia;
 use Mouse::Util::TypeConstraints;
+use utf8;
 
 our $VERSION = 0.01;
 
@@ -40,6 +41,13 @@ path '/validate' => sub {
 
 path '/configtest' => sub {
     return config;
+};
+
+path '/nihongo' => sub {
+    return {
+        template => 'index.tx',
+        title => '日本語であそぼ',
+    };
 };
 
 1;

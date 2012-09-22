@@ -11,12 +11,14 @@ use Nephia::View;
 use JSON ();
 use FindBin;
 use Data::Validator;
+use Encode;
 
 our $VERSION = '0.01';
 our @EXPORT = qw[ path req res run validate config ];
 our $MAPPER = Plack::App::URLMap->new;
 our $VIEW;
 our $CONFIG = {};
+our $CHARSET = 'UTF-8';
 
 sub path ($&) {
     my ( $path, $code ) = @_;
@@ -89,10 +91,11 @@ sub json_res {
 
 sub render {
     my $res = shift;
+    my $charset = delete $res->{charset} || $CHARSET;
     my $body = $VIEW->render( $res->{template}, $res );
     return [ 200,
-        [ 'Content-type' => 'text/html; charset=UTF-8' ],
-        [ $body ]
+        [ 'Content-type' => "text/html; charset=$charset" ],
+        [ Encode::encode( $charset, $body ) ]
     ];
 }
 
