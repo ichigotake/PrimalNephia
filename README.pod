@@ -55,6 +55,18 @@ This controller outputs response-value as JSON, and will be mounted on "/foobar"
 Attention to "template" attribute. 
 If you specified it, controller searches template file from view-directory and render it.
 
+If you use multibyte-string in response, please remember 'use utf8;' and, you may specify character-set as like as following.
+
+  path '/' => sub {
+      return {
+          template => 'mytemplate.tx',
+          title => 'わたしのホォムペェジへよおこそ！',
+          charset => 'Shift_JIS',
+      };
+  };
+
+If you not specified 'charset', it will be 'UTF-8'.
+
 =head2 Makes any response - Using "res" function
 
   path '/my-javascript' => sub {
