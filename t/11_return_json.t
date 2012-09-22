@@ -4,6 +4,8 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common;
 use JSON;
+use utf8;
+use Encode;
 
 use lib qw( ./t/nephia-test_app/lib );
 use Nephia::TestApp;
@@ -24,7 +26,7 @@ test_psgi
         };
 
         subtest "request_with_query" => sub {
-            my $query = 'おれおれ';
+            my $query = Encode::encode( 'utf8', 'おれおれ' );
             my $res = $cb->(GET "/json?q=$query" );
             is $res->code, 200;
             is $res->content_type, 'application/json';
