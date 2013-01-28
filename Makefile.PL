@@ -9,6 +9,7 @@ requires 'Text::Xslate';
 requires 'Data::Validator';
 requires 'Class::Load';
 requires 'Encode';
+requires 'Router::Simple';
 
 requires 'Path::Class' => 0.26;
 requires 'Cwd';
