@@ -6,44 +6,73 @@ use Exporter 'import';
 use Plack::Request;
 use Plack::Response;
 use Plack::Builder;
-use Plack::App::URLMap;
+use Router::Simple;
 use Nephia::View;
 use JSON ();
 use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.01';
-our @EXPORT = qw[ path req res run validate config ];
-our $MAPPER = Plack::App::URLMap->new;
+our $VERSION = '0.02';
+our @EXPORT = qw[ get post put del path req res run validate config ];
+our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
 our $CHARSET = 'UTF-8';
 
-sub path ($&) {
-    my ( $path, $code ) = @_;
-
+sub _path {
+    my ( $path, $code, $methods ) = @_;
     my $caller = caller();
-    $MAPPER->map( $path => sub {
-        my $env = shift;
-        my $req = Plack::Request->new( $env );
-        no strict qw[ refs subs ];
-        no warnings qw[ redefine ];
-        local *{$caller."::req"} = sub{ $req };
-        my $res = $code->( $req );
-        if ( ref $res eq 'HASH' ) {
-            return eval { $res->{template} } ? 
-                render( $res ) : 
-                json_res( $res )
-            ;
-        }
-        elsif ( ref $res eq 'Plack::Response' ) {
-            return $res->finalize;
-        }
-        else {
-            return $res;
-        }
-    } );
+    $MAPPER->connect(
+        $path, 
+        {
+            action => sub {
+                my $req = Plack::Request->new( shift );
+                no strict qw[ refs subs ];
+                no warnings qw[ redefine ];
+                local *{$caller."::req"} = sub{ $req };
+                my $res = $code->( $req );
+                if ( ref $res eq 'HASH' ) {
+                    return eval { $res->{template} } ? 
+                        render( $res ) : 
+                        json_res( $res )
+                    ;
+                }
+                elsif ( ref $res eq 'Plack::Response' ) {
+                    return $res->finalize;
+                }
+                else {
+                    return $res;
+                }
+            },
+        },
+        $methods ? { method => $methods } : undef,
+    );
+}
+
+sub get ($&) {
+    my ( $path, $code ) = @_;
+    _path( $path, $code, ['GET'] );
+}
+
+sub post ($&) {
+    my ( $path, $code ) = @_;
+    _path( $path, $code, ['POST'] );
+}
+
+sub put ($&) {
+    my ( $path, $code ) = @_;
+    _path( $path, $code, ['PUT'] );
+}
+
+sub del ($&) {
+    my ( $path, $code ) = @_;
+    _path( $path, $code, ['DELETE'] );
+}
+
+sub path ($@) {
+    my ( $path, $code, $methods ) = @_;
+    _path( $path, $code, $methods );
 }
 
 sub res (&) {
@@ -76,7 +105,15 @@ sub run {
     return builder { 
         enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
-        $MAPPER->to_app;
+        sub {
+            my $env = shift;
+            if ( my $p = $MAPPER->match($env) ) {
+                $p->{action}->($env);
+            }
+            else {
+                [404, [], ['Not Found']];
+            }
+        };
     };
 }
 
@@ -101,6 +138,7 @@ sub render {
 
 sub validate (%) {
     my $caller = caller();
+warn $caller;
     no strict qw[ refs subs ];
     no warnings qw[ redefine ];
     my $req = *{$caller.'::req'};
@@ -201,6 +239,18 @@ If you not specified 'charset', it will be 'UTF-8'.
   };
 
 "res" function returns Plack::Response object with customisable DSL-like syntax.
+
+=head2 Limitation by request method - Using (get|post|put|del) function
+
+  ### catch request that contains get-method
+  get '/foo' => sub { ... };
+  
+  ### post-method is following too.
+  post '/bar' => sub { ... };
+  
+  ### put-method and delete-method are too.
+  put '/baz' => sub { ... };
+  del '/hoge' => sub { ... };
 
 =head1 USING CONFIG
 

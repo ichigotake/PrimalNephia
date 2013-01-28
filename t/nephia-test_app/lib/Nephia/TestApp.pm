@@ -50,6 +50,30 @@ path '/nihongo' => sub {
     };
 };
 
+get '/item' => sub {
+    return {
+        message => 'ひのきのぼう　が　ある。',
+    };
+};
+
+post '/item' => sub {
+    return {
+        message => 'ひのきのぼう　で　かべをたたいた',
+    };
+};
+
+put '/item' => sub {
+    return {
+        message => 'ひのきのぼう　を　もどした',
+    };
+};
+
+del '/item' => sub {
+    return {
+        message => 'ひのきのぼう　を　すてた',
+    };
+};
+
 1;
 __END__
 
