@@ -21,3 +21,5 @@ UTF
 nephia
 psgi
 utf
+del
+param
