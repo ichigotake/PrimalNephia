@@ -31,6 +31,7 @@ test_psgi
             my $json = JSON->new->utf8->decode( $res->content );
             is $json->{message}, 'ひのきのぼう　で　かべをたたいた';
         };
+
         subtest "put request" => sub {
             my $res = $cb->(PUT "/item");
             is $res->code, 200;
@@ -45,6 +46,22 @@ test_psgi
             is $res->content_type, 'application/json';
             my $json = JSON->new->utf8->decode( $res->content );
             is $json->{message}, 'ひのきのぼう　を　すてた';
+        };
+
+        subtest "post request with param" => sub {
+            my $res = $cb->(POST "/item/perl" );
+            is $res->code, 200;
+            is $res->content_type, 'application/json';
+            my $json = JSON->new->utf8->decode( $res->content );
+            is $json->{message}, 'perl　を　つかう';
+        };
+
+        subtest "post request again" => sub {
+            my $res = $cb->(POST "/item" );
+            is $res->code, 200;
+            is $res->content_type, 'application/json';
+            my $json = JSON->new->utf8->decode( $res->content );
+            is $json->{message}, 'perl　で　かべをたたいた';
         };
 
     }

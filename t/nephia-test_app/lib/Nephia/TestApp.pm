@@ -9,6 +9,8 @@ our $VERSION = 0.01;
 
 enum 'Sex' => qw( male female shemale );
 
+my $item = 'ひのきのぼう';
+
 path '/' => sub {
     return {
         template => 'index.tx',
@@ -52,25 +54,32 @@ path '/nihongo' => sub {
 
 get '/item' => sub {
     return {
-        message => 'ひのきのぼう　が　ある。',
+        message => "$item　が　ある。",
     };
 };
 
 post '/item' => sub {
     return {
-        message => 'ひのきのぼう　で　かべをたたいた',
+        message => "$item　で　かべをたたいた",
     };
 };
 
 put '/item' => sub {
     return {
-        message => 'ひのきのぼう　を　もどした',
+        message => "$item　を　もどした",
     };
 };
 
 del '/item' => sub {
     return {
-        message => 'ひのきのぼう　を　すてた',
+        message => "$item　を　すてた",
+    };
+};
+
+post '/item/{newitem:(.+)}' => sub {
+    $item = param()->{'newitem'};
+    return {
+        message => "$item　を　つかう",
     };
 };
 

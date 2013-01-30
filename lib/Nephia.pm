@@ -8,13 +8,13 @@ use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
-use JSON ();
+use JSON::XS ();
 use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.02';
-our @EXPORT = qw[ get post put del path req res run validate config ];
+our $VERSION = '0.03';
+our @EXPORT = qw[ get post put del path req res param run validate config ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
@@ -28,10 +28,12 @@ sub _path {
         {
             action => sub {
                 my $req = Plack::Request->new( shift );
+                my $param = shift;
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
                 local *{$caller."::req"} = sub{ $req };
-                my $res = $code->( $req );
+                local *{$caller."::param"} = sub{ $param };
+                my $res = $code->( $req, $param );
                 if ( ref $res eq 'HASH' ) {
                     return eval { $res->{template} } ? 
                         render( $res ) : 
@@ -108,7 +110,7 @@ sub run {
         sub {
             my $env = shift;
             if ( my $p = $MAPPER->match($env) ) {
-                $p->{action}->($env);
+                $p->{action}->($env, $p);
             }
             else {
                 [404, [], ['Not Found']];
@@ -228,7 +230,7 @@ If you use multibyte-string in response, please remember 'use utf8;' and, you ma
 
 If you not specified 'charset', it will be 'UTF-8'.
 
-=head2 Makes any response - Using "res" function
+=head2 Makes response - Using "res" function
 
   path '/my-javascript' => sub {
       return res {
@@ -250,6 +252,13 @@ If you not specified 'charset', it will be 'UTF-8'.
   ### put-method and delete-method are too.
   put '/baz' => sub { ... };
   del '/hoge' => sub { ... };
+
+=head2 How to use routing with Router::Simple style matching-pattern and capture it - Using param function
+
+  post '/item/{id:([0-9]+)}' => sub {
+      my $item_id = param->{id}; # get param named "id" from path
+      ...
+  };
 
 =head1 USING CONFIG
 
@@ -300,6 +309,10 @@ See documentation of validate method and Data::Validator.
 
 Mount controller on specified path.
 
+=head2 get post put del
+
+Usage equal as path(). But these functions specifies limitation for HTTP request-method.
+
 =head2 req
 
 Return Plack::Request object. You can call this function in coderef that is argument of path().
@@ -307,6 +320,10 @@ Return Plack::Request object. You can call this function in coderef that is argu
 =head2 res $coderef
 
 Return Plack::Response object with customisable DSL-like syntax.
+
+=head2 param
+
+Return parameters that contains in path as hashref. 
 
 =head2 config
 

@@ -67,7 +67,7 @@ If you use multibyte-string in response, please remember 'use utf8;' and, you ma
 
 If you not specified 'charset', it will be 'UTF-8'.
 
-=head2 Makes any response - Using "res" function
+=head2 Makes response - Using "res" function
 
   path '/my-javascript' => sub {
       return res {
@@ -89,6 +89,13 @@ If you not specified 'charset', it will be 'UTF-8'.
   ### put-method and delete-method are too.
   put '/baz' => sub { ... };
   del '/hoge' => sub { ... };
+
+=head2 How to use routing with Router::Simple style matching-pattern and capture it - Using param function
+
+  post '/item/{id:([0-9]+)}' => sub {
+      my $item_id = param->{id}; # get param named "id" from path
+      ...
+  };
 
 =head1 USING CONFIG
 
@@ -139,6 +146,10 @@ See documentation of validate method and Data::Validator.
 
 Mount controller on specified path.
 
+=head2 get post put del
+
+Usage equal as path(). But these functions specifies limitation for HTTP request-method.
+
 =head2 req
 
 Return Plack::Request object. You can call this function in coderef that is argument of path().
@@ -146,6 +157,10 @@ Return Plack::Request object. You can call this function in coderef that is argu
 =head2 res $coderef
 
 Return Plack::Response object with customisable DSL-like syntax.
+
+=head2 param
+
+Return parameters that contains in path as hashref. 
 
 =head2 config
 

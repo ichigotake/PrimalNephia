@@ -1,7 +1,11 @@
 Revision history for Perl extension Nephia
 
+0.03    Wed Jan 30 11:54:29 2013
+        - support param function.
+
 0.02    Mon Jan 28 11:28:32 2013
-        - support (get|post|put|del) method.
+        - change mapper class from Plack::App::URLMap to Router::Simple.
+        - support (get|post|put|del) function.
 
 0.01    Wed Jul 18 08:18:52 2012
         - original version
