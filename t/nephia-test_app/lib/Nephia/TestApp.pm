@@ -76,7 +76,7 @@ del '/item' => sub {
     };
 };
 
-post '/item/{newitem:(.+)}' => sub {
+post '/item/{newitem:.+}' => sub {
     $item = param()->{'newitem'};
     return {
         message => "$item　を　つかう",
