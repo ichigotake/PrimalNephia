@@ -14,7 +14,7 @@ use Data::Validator;
 use Encode;
 
 our $VERSION = '0.03';
-our @EXPORT = qw[ get post put del path req res param run validate config ];
+our @EXPORT = qw[ get post put del path req res param run validate config app ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
@@ -107,15 +107,20 @@ sub run {
     return builder { 
         enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
-        sub {
-            my $env = shift;
-            if ( my $p = $MAPPER->match($env) ) {
-                $p->{action}->($env, $p);
-            }
-            else {
-                [404, [], ['Not Found']];
-            }
-        };
+        $class->app;
+    };
+}
+
+sub app {
+    my $class = shift;
+    return sub {
+        my $env = shift;
+        if ( my $p = $MAPPER->match($env) ) {
+            $p->{action}->($env, $p);
+        }
+        else {
+            [404, [], ['Not Found']];
+        }
     };
 }
 
