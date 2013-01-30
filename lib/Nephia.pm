@@ -138,7 +138,6 @@ sub render {
 
 sub validate (%) {
     my $caller = caller();
-warn $caller;
     no strict qw[ refs subs ];
     no warnings qw[ redefine ];
     my $req = *{$caller.'::req'};
