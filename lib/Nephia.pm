@@ -8,7 +8,7 @@ use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
-use JSON::XS ();
+use JSON ();
 use FindBin;
 use Data::Validator;
 use Encode;
