@@ -33,6 +33,14 @@ path '/direct/js' => sub {
     };
 };
 
+path '/direct/array' => sub {
+    res { ( 200, [], ['foobar'] ) };
+};
+
+path '/direct/status_code' => sub {
+    res { 302 };
+};
+
 path '/validate' => sub {
     return validate 
         name => { isa => 'Str' },

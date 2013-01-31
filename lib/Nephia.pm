@@ -13,7 +13,7 @@ use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @EXPORT = qw[ get post put del path req res param run validate config app ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
@@ -88,14 +88,20 @@ sub res (&) {
         map { 
             my $method = $_;
             *{$caller.'::'.$method} = sub (@) { 
-                return $res->$method( @_ );
+                $res->$method( @_ );
+                return;
             };
         } qw[ 
             status headers body header
             content_type content_length
             content_encoding redirect cookies
         ];
-        $code->();
+        my @rtn = ( $code->() );
+        if ( @rtn ) {
+            $rtn[1] ||= [];
+            $rtn[2] ||= [];
+            $res = [@rtn];
+        }
     }
     return $res;
 }
@@ -165,6 +171,8 @@ sub config (@) {
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -245,6 +253,19 @@ If you not specified 'charset', it will be 'UTF-8'.
   };
 
 "res" function returns Plack::Response object with customisable DSL-like syntax.
+
+You may specify coderef that's passed to res() returns some value. These values are passed into arrayref that is as plack response.
+
+  path '/some/path' => sub {
+      res { ( 200, ['text/html; charset=utf8'], ['Wooootheee!!!'] ) };
+  };
+
+And, you can write like following.
+
+  path '/cond/sample' => sub {
+      return res { 404 } unless req->param('q');
+      return { ( 200, [], ['you say '. req->param('q')] ) };
+  };
 
 =head2 Limitation by request method - Using (get|post|put|del) function
 

@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 NAME
 
 Nephia - Mini WAF
@@ -77,6 +79,19 @@ If you not specified 'charset', it will be 'UTF-8'.
   };
 
 "res" function returns Plack::Response object with customisable DSL-like syntax.
+
+You may specify coderef that's passed to res() returns some value. These values are passed into arrayref that is as plack response.
+
+  path '/some/path' => sub {
+      res { ( 200, ['text/html; charset=utf8'], ['Wooootheee!!!'] ) };
+  };
+
+And, you can write like following.
+
+  path '/cond/sample' => sub {
+      return res { 404 } unless req->param('q');
+      return { ( 200, [], ['you say '. req->param('q')] ) };
+  };
 
 =head2 Limitation by request method - Using (get|post|put|del) function
 
