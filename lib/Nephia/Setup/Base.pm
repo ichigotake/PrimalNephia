@@ -26,7 +26,7 @@ sub create {
     $self->approot->mkpath( 1, 0755 );
     map {
         $self->approot->subdir($_)->mkpath( 1, 0755 );
-    } qw( lib etc view root root/static t );
+    } qw( lib etc etc/conf view root root/static t );
 
     $self->psgi_file;
 
