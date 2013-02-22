@@ -24,3 +24,11 @@ utf
 del
 param
 plack
+appname
+conf
+dirname
+envname
+gz
+powerd
+px
+
