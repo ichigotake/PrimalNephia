@@ -1,7 +1,10 @@
 Revision history for Perl extension Nephia
 
-0.04    Thu Jan 31 12:05:23 2013
+0.04    Thu Feb 23 13:11:23 2013
         - res() supports return values.
+        - add config() function.
+        - use EU::MM for makefile template.
+        - add config file template.
 
 0.03    Wed Jan 30 11:54:29 2013
         - support param function.
