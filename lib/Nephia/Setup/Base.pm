@@ -7,7 +7,7 @@ use Cwd;
 use Carp;
 use parent qw( Class::Accessor::Fast );
 
-__PACKAGE__->mk_accessors( qw( appname approot pmpath ) );
+__PACKAGE__->mk_accessors( qw( appname approot pmpath context_path ) );
 
 sub new {
     my ( $class, %opts ) = @_;
@@ -16,6 +16,7 @@ sub new {
     $opts{approot} = dir( File::Spec->catfile( '.', $appname ) );
 
     $opts{pmpath} = file( File::Spec->catfile( $opts{approot}->stringify, 'lib', split(/::/, $opts{appname}. '.pm') ) );
+    $opts{context_path} = file( File::Spec->catfile( $opts{approot}->stringify, 'lib', split(/::/, $opts{appname}. '::Context.pm') ) );
 
     return $class->SUPER::new( { %opts } );
 }
@@ -30,6 +31,7 @@ sub create {
 
     $self->psgi_file;
     $self->app_class_file;
+    $self->context_class_file;
     $self->index_template_file;
     $self->css_file;
     $self->makefile;
@@ -79,6 +81,15 @@ sub app_class_file {
     $body =~ s[\$appname][$appname]g;
     $self->pmpath->dir->mkpath( 1, 0755 );
     $self->pmpath->spew( $body );
+}
+
+sub context_class_file {
+    my $self = shift;
+    my $appname = $self->appname;
+    my $body = $self->templates->{context_class_file};
+    $body =~ s[\$appname][$appname]g;
+    $self->context_path->dir->mkpath( 1, 0755 );
+    $self->context_path->spew( $body );
 }
 
 sub index_template_file {
@@ -141,15 +152,15 @@ psgi_file
 ---
 use strict;
 use warnings;
-use FindBin;
 use File::Spec;
 use File::Basename 'dirname';
+use constant BASEDIR => dirname(__FILE__);
 
-use lib ("$FindBin::Bin/lib", "$FindBin::Bin/extlib/lib/perl5");
+use lib File::Spec->catdir(BASEDIR, 'lib'); 
+use lib File::Spec->catdir(BASEDIR, 'extlib', 'lib', 'perl5');
 use $appname;
-my $basedir = dirname(__FILE__);
 my $config_name = $ENV{PLACK_ENV} || 'development';
-$appname->run( do(File::Spec->catfile($basedir, 'etc', 'conf', $config_name.'.pl')) );
+$appname->run( do(File::Spec->catfile(BASEDIR, 'etc', 'conf', $config_name.'.pl')) );
 ===
 
 app_class_file
@@ -157,15 +168,27 @@ app_class_file
 package $appname;
 use strict;
 use warnings;
+use File::Spec;
 use Nephia;
+use $appname::Context;
+use Config::Micro;
 
 our $VERSION = 0.01;
+
+# load config
+config(
+    require Config::Micro->file( dir => File::Spec->catdir('..', 'etc', 'conf') ) 
+);
+
+# create app context instance
+my $c = $appname::Context->new( config => config() );
+
 
 path '/' => sub {
     my $req = shift;
     return {
         template => 'index.tx',
-        title    => config->{appname},
+        title    => $c->appname,
         envname  => config->{envname},
     };
 };
@@ -199,6 +222,22 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
+===
+
+context_class_file
+---
+package $appname::Context;
+use strict;
+use warnings;
+use Context::Micro;
+
+sub appname {
+    my $self = shift;
+    return $self->entry( appname => sub { $self->config->{appname} } );
+}
+
+1;
 
 ===
 
@@ -285,7 +324,10 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        'Nephia' => '$NEPHIA_VERSION',
+        'File::Spec' => 0,
+        'Config::Micro' => 0,
+        'Context::Micro' => 0,
+        'Nephia' => $NEPHIA_VERSION,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => '$appname-*' },
@@ -308,9 +350,9 @@ done_testing;
 common_conf
 ---
 ### common config
-(
++{
     appname => '$appname',
-);
+};
 ===
 
 conf_file
@@ -321,7 +363,7 @@ use File::Basename 'dirname';
 my $basedir = File::Spec->rel2abs(
     File::Spec->catdir( dirname(__FILE__), '..', '..' )
 );
-(
-    ( do(File::Spec->catfile($basedir, 'etc', 'conf', 'common.pl')) ),
++{
+    %{ do(File::Spec->catfile($basedir, 'etc', 'conf', 'common.pl')) },
     envname => '$envname',
-);
+};
