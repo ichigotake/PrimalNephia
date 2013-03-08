@@ -13,7 +13,7 @@ use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.04_001';
+our $VERSION = '0.04';
 our @EXPORT = qw[ get post put del path req res param run validate config app ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
@@ -106,11 +106,10 @@ sub res (&) {
     return $res;
 }
 
-use Data::Dumper;
 sub run {
-    my ( $class, $options ) = @_;
-    $CONFIG = $options;
-    $VIEW = Nephia::View->new( %{ $options->{view} } );
+    my ( $class, %options ) = @_;
+    $CONFIG = { %options };
+    $VIEW = Nephia::View->new( %{$options{view}} );
     return builder { 
         enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};

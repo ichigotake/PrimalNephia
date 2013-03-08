@@ -14,7 +14,6 @@ requires 'Path::Class' => 0.26;
 requires 'Cwd';
 requires 'File::Spec';
 requires 'File::Basename';
-requires 'Context::Micro';
 
 tests 't/*.t';
 author_tests 'xt';
