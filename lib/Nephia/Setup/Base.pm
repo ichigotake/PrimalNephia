@@ -5,9 +5,10 @@ use File::Spec;
 use Path::Class;
 use Cwd;
 use Carp;
-use parent qw( Class::Accessor::Fast );
-
-__PACKAGE__->mk_accessors( qw( appname approot pmpath ) );
+use Class::Accessor::Lite (
+    new => 0,
+    rw => [qw( appname approot pmpath )],
+);
 
 sub new {
     my ( $class, %opts ) = @_;
