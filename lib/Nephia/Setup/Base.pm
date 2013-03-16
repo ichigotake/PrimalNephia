@@ -18,7 +18,7 @@ sub new {
 
     $opts{pmpath} = file( File::Spec->catfile( $opts{approot}->stringify, 'lib', split(/::/, $opts{appname}. '.pm') ) );
 
-    return $class->SUPER::new( { %opts } );
+    return bless { %opts }, $class;
 }
 
 sub create {
