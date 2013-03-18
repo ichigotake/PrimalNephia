@@ -143,14 +143,13 @@ psgi_file
 use strict;
 use warnings;
 use FindBin;
+use Config::Micro;
 use File::Spec;
-use File::Basename 'dirname';
 
 use lib ("$FindBin::Bin/lib", "$FindBin::Bin/extlib/lib/perl5");
 use $appname;
-my $basedir = dirname(__FILE__);
-my $config_name = $ENV{PLACK_ENV} || 'development';
-$appname->run( do(File::Spec->catfile($basedir, 'etc', 'conf', $config_name.'.pl')) );
+my $config = require( Config::Micro->file( dir => File::Spec->catdir('etc','conf') ) );
+$appname->run( $config );
 ===
 
 app_class_file
