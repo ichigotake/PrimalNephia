@@ -1,5 +1,10 @@
 Revision history for Perl extension Nephia
 
+0.05    Mon Mar 18 15:44:09 JST 2013
+        - use Config::Micro for loading config
+        - change config as hashref
+        - change dependency for Class::Accessor::Fast to Class::Accessor::Lite
+
 0.04    Thu Feb 23 13:11:23 2013
         - res() supports return values.
         - add config() function.

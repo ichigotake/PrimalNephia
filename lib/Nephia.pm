@@ -13,7 +13,7 @@ use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @EXPORT = qw[ get post put del path req res param run validate config app ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
