@@ -107,9 +107,9 @@ sub res (&) {
 }
 
 sub run {
-    my ( $class, %options ) = @_;
-    $CONFIG = { %options };
-    $VIEW = Nephia::View->new( %{$options{view}} );
+    my $class = shift;
+    $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
+    $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
     return builder { 
         enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};

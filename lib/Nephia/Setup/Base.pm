@@ -308,9 +308,9 @@ done_testing;
 common_conf
 ---
 ### common config
-(
++{
     appname => '$appname',
-);
+};
 ===
 
 conf_file
@@ -321,7 +321,7 @@ use File::Basename 'dirname';
 my $basedir = File::Spec->rel2abs(
     File::Spec->catdir( dirname(__FILE__), '..', '..' )
 );
-(
-    ( do(File::Spec->catfile($basedir, 'etc', 'conf', 'common.pl')) ),
++{
+    %{ do(File::Spec->catfile($basedir, 'etc', 'conf', 'common.pl')) },
     envname => '$envname',
-);
+};
