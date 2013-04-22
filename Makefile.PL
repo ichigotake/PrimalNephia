@@ -8,6 +8,7 @@ requires 'JSON';
 requires 'Text::Xslate';
 requires 'Data::Validator';
 requires 'Class::Load';
+requires 'Class::Accessor::Fast';
 requires 'Class::Accessor::Lite';
 requires 'Config::Micro';
 requires 'Encode';
