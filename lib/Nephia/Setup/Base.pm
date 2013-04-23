@@ -78,6 +78,7 @@ sub app_class_file {
     my $body = $self->templates->{app_class_file};
     $body =~ s[\$approot][$approot]g;
     $body =~ s[\$appname][$appname]g;
+    $body =~ s[:::][=]g;
     $self->pmpath->dir->mkpath( 1, 0755 );
     $self->pmpath->spew( $body );
 }
@@ -183,32 +184,32 @@ path '/data' => sub {
 1;
 __END__
 
-=head1 NAME
+:::head1 NAME
 
 $appname - Web Application
 
-=head1 SYNOPSIS
+:::head1 SYNOPSIS
 
   $ plackup
 
-=head1 DESCRIPTION
+:::head1 DESCRIPTION
 
 $appname is web application based Nephia.
 
-=head1 AUTHOR
+:::head1 AUTHOR
 
 clever guy
 
-=head1 SEE ALSO
+:::head1 SEE ALSO
 
 Nephia
 
-=head1 LICENSE
+:::head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-=cut
+:::cut
 
 ===
 
