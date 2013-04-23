@@ -363,6 +363,8 @@ Return validated parameters as hashref. You have to set validation rule as like 
 
 ytnobody E<lt>ytnobody@gmail.comE<gt>
 
+ichigotake
+
 =head1 SEE ALSO
 
 Plack::Request
