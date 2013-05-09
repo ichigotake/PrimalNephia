@@ -7,6 +7,9 @@ all_pod_files_spelling_ok('lib');
 __DATA__
 ytnobody
 ytnobody@gmail.com
+ichigotake
+pre
+ul
 Nephia
 WAF
 DSL
