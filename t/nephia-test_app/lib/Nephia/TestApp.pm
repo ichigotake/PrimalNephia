@@ -7,6 +7,8 @@ use utf8;
 
 our $VERSION = 0.01;
 
+nephia_plugins 'Bark';
+
 enum 'Sex' => qw( male female shemale );
 
 my $item = 'ひのきのぼう';
@@ -89,6 +91,14 @@ post '/item/{newitem:.+}' => sub {
     return {
         message => "$item　を　つかう",
     };
+};
+
+path '/bark' => sub {
+    bark();
+};
+
+path '/barkbark' => sub {
+    barkbark(qw/foo bar/);
 };
 
 1;
