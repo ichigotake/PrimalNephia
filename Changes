@@ -4,6 +4,7 @@ Revision history for Perl extension Nephia
 
 0.06    Thu May 16 18:16:42 JST 2013
         - add nephia_plugins function.
+        - done 'minil migrate' (see Minilla)
 
 0.05    Tue Apr 23 22:46:33 JST 2013
         [Setup::Base] 
