@@ -5,7 +5,7 @@ use Nephia;
 use Mouse::Util::TypeConstraints;
 use utf8;
 
-our $VERSION = 0.01;
+our $VERSION = 0.06;
 
 nephia_plugins 'Bark';
 
