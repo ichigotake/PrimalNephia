@@ -13,7 +13,7 @@ use FindBin;
 use Data::Validator;
 use Encode;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @EXPORT = qw[ get post put del path req res param run validate config app nephia_plugins ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
