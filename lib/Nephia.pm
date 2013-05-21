@@ -137,6 +137,8 @@ sub json_res {
         [ 
             'Content-type'           => 'application/json',
             'X-Content-Type-Options' => 'nosniff',  ### For IE 9 or later. See http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-1297
+            'X-Frame-Options'        => 'DENY',     ### Suppress loading web-page into iframe. See http://blog.mozilla.org/security/2010/09/08/x-frame-options/
+            'Cache-Control'          => 'private',  ### no public cache
         ],
         [ $body ]
     ];
