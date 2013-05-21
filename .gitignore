@@ -12,6 +12,8 @@ MANIFEST.bak
 /.build
 /_build_params
 /Build
+/_build
 !Build/
 !META.json
 !LICENSE
+MYMETA.*
