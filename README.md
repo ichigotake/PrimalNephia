@@ -145,19 +145,6 @@ And, you can access to these config in your application as following.
 
 You can look static-files that is into root directory via HTTP.
 
-# VALIDATE PARAMETERS
-
-You may use validator with validate function.
-
-    path '/some/path' => sub {
-        my $params = validate
-            name => { isa => 'Str', default => 'Nameless John' },
-            age => { isa => 'Int' }
-        ;
-    };
-
-See documentation of validate method and Data::Validator.
-
 # USING PLUGINS
 
 You may use plugins for Nephia, as like followings.
@@ -231,10 +218,6 @@ Return parameters that contains in path as hashref.
 
 Return config as hashref.
 
-## validate %validation\_rules
-
-Return validated parameters as hashref. You have to set validation rule as like as Data::Validator's instantiate arguments.
-
 ## nephia\_plugins @plugins
 
 Load specified Nephia plugins.
@@ -258,8 +241,6 @@ Text::Xslate
 Text::Xslate::Syntax::Kolon
 
 JSON
-
-Data::Validator
 
 # LICENSE
 

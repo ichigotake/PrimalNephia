@@ -10,11 +10,10 @@ use Router::Simple;
 use Nephia::View;
 use JSON ();
 use FindBin;
-use Data::Validator;
 use Encode;
 
 our $VERSION = '0.07';
-our @EXPORT = qw[ get post put del path req res param run validate config app nephia_plugins ];
+our @EXPORT = qw[ get post put del path req res param run config app nephia_plugins ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
@@ -152,15 +151,6 @@ sub render {
         [ 'Content-type' => "text/html; charset=$charset" ],
         [ Encode::encode( $charset, $body ) ]
     ];
-}
-
-sub validate (%) {
-    my $caller = caller();
-    no strict qw[ refs subs ];
-    no warnings qw[ redefine ];
-    my $req = *{$caller.'::req'};
-    my $validator = Data::Validator->new(@_);
-    return $validator->validate( %{$req->()->parameters->as_hashref_mixed} );
 }
 
 sub config (@) {
@@ -339,19 +329,6 @@ And, you can access to these config in your application as following.
 
 You can look static-files that is into root directory via HTTP.
 
-=head1 VALIDATE PARAMETERS
-
-You may use validator with validate function.
-
-  path '/some/path' => sub {
-      my $params = validate
-          name => { isa => 'Str', default => 'Nameless John' },
-          age => { isa => 'Int' }
-      ;
-  };
-
-See documentation of validate method and Data::Validator.
-
 =head1 USING PLUGINS
 
 You may use plugins for Nephia, as like followings.
@@ -420,10 +397,6 @@ Return parameters that contains in path as hashref.
 
 Return config as hashref.
 
-=head2 validate %validation_rules
-
-Return validated parameters as hashref. You have to set validation rule as like as Data::Validator's instantiate arguments.
-
 =head2 nephia_plugins @plugins
 
 Load specified Nephia plugins.
@@ -447,8 +420,6 @@ Text::Xslate
 Text::Xslate::Syntax::Kolon
 
 JSON
-
-Data::Validator
 
 =head1 LICENSE
 
