@@ -13,6 +13,5 @@ requires 'Router::Simple';
 requires 'Text::Xslate';
 
 on build => sub {
-    requires 'ExtUtils::MakeMaker', '6.36';
     requires 'Test::More';
 };
