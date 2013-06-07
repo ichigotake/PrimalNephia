@@ -93,6 +93,20 @@ And, you can write like following.
         return { ( 200, [], ['you say '. req->param('q')] ) };
     };
 
+Commands supported in "res" function are following.
+
+- status 
+- headers 
+- header
+- body 
+- content\_type
+- content\_length
+- content\_encoding
+- redirect
+- cookies
+
+Please see Plack::Response's documentation for more detail.
+
 ## Limitation by request method - Using (get|post|put|del) function
 
     ### catch request that contains get-method

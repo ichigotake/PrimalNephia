@@ -280,6 +280,32 @@ And, you can write like following.
       return { ( 200, [], ['you say '. req->param('q')] ) };
   };
 
+Commands supported in "res" function are following.
+
+=over 4 
+
+=item status 
+
+=item headers 
+
+=item header
+
+=item body 
+
+=item content_type
+
+=item content_length
+
+=item content_encoding
+
+=item redirect
+
+=item cookies
+
+=back 
+
+Please see Plack::Response's documentation for more detail.
+
 =head2 Limitation by request method - Using (get|post|put|del) function
 
   ### catch request that contains get-method
