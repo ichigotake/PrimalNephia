@@ -2,7 +2,7 @@ package Nephia::Setup::Base;
 use strict;
 use warnings;
 use File::Spec;
-use Path::Class;
+use File::Basename 'dirname';
 use Cwd;
 use Carp;
 use Class::Accessor::Lite (
@@ -13,10 +13,11 @@ use Class::Accessor::Lite (
 sub new {
     my ( $class, %opts ) = @_;
 
-    my $appname = $opts{appname}; $appname =~ s/::/-/g;
-    $opts{approot} = dir( File::Spec->catfile( '.', $appname ) );
+    my $appname = $opts{appname}; 
+    $appname =~ s/::/-/g;
+    $opts{approot} = File::Spec->catdir('.', $appname);
 
-    $opts{pmpath} = file( File::Spec->catfile( $opts{approot}->stringify, 'lib', split(/::/, $opts{appname}. '.pm') ) );
+    $opts{pmpath} = File::Spec->catfile( $opts{approot}, 'lib', split(/::/, $opts{appname}. '.pm') );
     my @template_data = ();
     {
         no strict 'refs';
@@ -49,9 +50,10 @@ sub _parse_template_data {
 sub create {
     my $self = shift;
 
-    $self->approot->mkpath( 1, 0755 );
+    $self->mkpath($self->approot);
     map {
-        $self->approot->subdir($_)->mkpath( 1, 0755 );
+        my @path = split '/', $_;
+        $self->mkpath($self->approot, @path);
     } qw( lib etc etc/conf view root root/static t );
 
     $self->psgi_file;
@@ -63,12 +65,27 @@ sub create {
     $self->config_file;
 }
 
-sub nephia_version {
-    my $self = shift;
-    return $self->{nephia_version} ? $self->{nephia_version} : do {
-        require Nephia;
-        $Nephia::VERSION;
-    };
+sub spew {
+    my ($self, $file, $body) = @_;
+    print "spew into file $file\n";
+    open my $fh, '>', $file or croak "could not spew into $file: $!";
+    print $fh $body;
+    close $fh;
+}
+
+sub mkpath {
+    my ($self, @part) = @_;
+    my $path = File::Spec->catdir(@part);
+    unless (-d $path) {
+        print "create path $path\n";
+        mkdir $path, 0755 or croak "could not create path $path: $!";
+    }
+}
+
+sub dir {
+    my ($self, @part) = @_;
+    my $path = File::Spec->catfile(@part);
+    dirname($path);
 }
 
 sub psgi_file {
@@ -76,7 +93,8 @@ sub psgi_file {
     my $appname = $self->appname;
     my $body = $self->templates->{psgi_file};
     $body =~ s[\$appname][$appname]g;
-    $self->approot->file('app.psgi')->spew( $body );
+    my $file = File::Spec->catfile($self->approot, 'app.psgi');
+    $self->spew($file, $body);
 }
 
 sub app_class_file {
@@ -87,20 +105,23 @@ sub app_class_file {
     $body =~ s[\$approot][$approot]g;
     $body =~ s[\$appname][$appname]g;
     $body =~ s[:::][=]g;
-    $self->pmpath->dir->mkpath( 1, 0755 );
-    $self->pmpath->spew( $body );
+    my $dir = $self->dir($self->pmpath);
+    $self->mkpath($dir);
+    $self->spew($self->pmpath, $body);
 }
 
 sub index_template_file {
     my $self = shift;
     my $body = $self->templates->{index_template_file};
-    $self->approot->file('view', 'index.tx')->spew( $body );
+    my $file = File::Spec->catfile($self->approot, qw/view index.tx/);
+    $self->spew($file, $body);
 }
 
 sub css_file {
     my $self = shift;
     my $body = $self->templates->{css_file};
-    $self->approot->file('root', 'static', 'style.css')->spew( $body );
+    my $file = File::Spec->catfile($self->approot, qw/root static style.css/);
+    $self->spew($file, $body);
 }
 
 sub makefile {
@@ -109,12 +130,11 @@ sub makefile {
     $appname =~ s[::][-]g;
     my $pmpath = $self->pmpath;
     $pmpath =~ s[$appname][.];
-    my $version = $self->nephia_version;
     my $body = $self->templates->{makefile};
     $body =~ s[\$appname][$appname]g;
     $body =~ s[\$pmpath][$pmpath]g;
-    $body =~ s[\$NEPHIA_VERSION][$version]g;
-    $self->approot->file('Makefile.PL')->spew( $body );
+    my $file = File::Spec->catfile($self->approot, 'Makefile.PL');
+    $self->spew($file, $body);
 }
 
 sub basic_test_file {
@@ -122,7 +142,8 @@ sub basic_test_file {
     my $appname = $self->appname;
     my $body = $self->templates->{basic_test_file};
     $body =~ s[\$appname][$appname]g;
-    $self->approot->file('t','001_basic.t')->spew( $body );
+    my $file = File::Spec->catfile($self->approot, qw/t 001_basic.t/);
+    $self->spew($file, $body);
 }
 
 sub config_file {
@@ -131,15 +152,14 @@ sub config_file {
     $appname =~ s[::][-]g;
     my $common = $self->templates->{common_conf};
     $common =~ s[\$appname][$appname]g;
-    my $common_conf = $self->approot->file('etc','conf','common.pl');
-    my $common_conf_path = $common_conf->stringify;
-    $common_conf_path =~ s[^$appname][.];
-    $common_conf->spew( $common );
+    my $common_conf_path = File::Spec->catfile($self->approot, 'etc','conf','common.pl');
+    $self->spew($common_conf_path, $common);
     for my $envname (qw( development staging production )) {
         my $body = $self->templates->{conf_file};
         $body =~ s[\$common_conf_path][$common_conf_path]g;
         $body =~ s[\$envname][$envname]g;
-        $self->approot->file('etc','conf',$envname.'.pl')->spew( $body );
+        my $file = File::Spec->catfile($self->approot, 'etc', 'conf', $envname.'.pl');
+        $self->spew($file, $body);
     }
 }
 
@@ -358,7 +378,7 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        'Nephia' => '$NEPHIA_VERSION',
+        'Nephia' => '0',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => '$appname-*' },

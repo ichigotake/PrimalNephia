@@ -6,10 +6,11 @@ requires 'Exporter';
 requires 'File::Basename';
 requires 'File::Spec';
 requires 'JSON';
-requires 'Path::Class', '0.26';
 requires 'Plack';
 requires 'Router::Simple';
 requires 'Text::Xslate';
+requires 'Guard';
+requires 'Capture::Tiny';
 
 on build => sub {
     requires 'Test::More';
