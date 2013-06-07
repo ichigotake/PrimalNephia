@@ -1,6 +1,5 @@
 requires 'Class::Accessor::Fast';
 requires 'Class::Accessor::Lite';
-requires 'Class::Load';
 requires 'Config::Micro';
 requires 'Cwd';
 requires 'Encode';

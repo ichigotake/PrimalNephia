@@ -1,7 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
-        - more quite design template
+        - more quite design template and style
+        - stop using Class::Load. use Nephia::ClassLoader
 
 0.08 2013-06-07T01:41:12Z
         - cut out validation feature into plugin (Nephia::Plugin::Data::Validator)
