@@ -1,4 +1,3 @@
-requires 'Class::Accessor::Fast';
 requires 'Class::Accessor::Lite';
 requires 'Config::Micro';
 requires 'Cwd';

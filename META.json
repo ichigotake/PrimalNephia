@@ -47,7 +47,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Class::Accessor::Fast" : "0",
             "Class::Accessor::Lite" : "0",
             "Config::Micro" : "0",
             "Cwd" : "0",
