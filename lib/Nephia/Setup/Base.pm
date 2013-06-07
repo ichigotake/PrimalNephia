@@ -267,6 +267,7 @@ index_template_file
 css_file
 ---
 body {
+    text-align: center; 
     background: #f7f7f7;
     color: #666;
     padding: 0px;
@@ -286,6 +287,7 @@ a {
 }
 
 div.title {
+    text-align: justify;
     width: 100%;
     margin: 0px;
     padding: 0px;
@@ -305,6 +307,7 @@ span.envname {
 }
 
 div.content {
+    text-align: justify;
     background-color: #fff;
     width: 80%;
     margin: 20px auto;
