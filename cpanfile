@@ -14,6 +14,5 @@ requires 'Text::Xslate';
 
 on build => sub {
     requires 'ExtUtils::MakeMaker', '6.36';
-    requires 'Mouse::Util::TypeConstraints';
     requires 'Test::More';
 };

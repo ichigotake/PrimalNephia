@@ -28,7 +28,6 @@
       "build" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "6.36",
-            "Mouse::Util::TypeConstraints" : "0",
             "Test::More" : "0"
          }
       },
