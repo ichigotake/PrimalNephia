@@ -60,7 +60,7 @@ sub create {
     $self->app_class_file;
     $self->index_template_file;
     $self->css_file;
-    $self->makefile;
+    $self->cpanfile;
     $self->basic_test_file;
     $self->config_file;
 }
@@ -124,16 +124,14 @@ sub css_file {
     $self->spew($file, $body);
 }
 
-sub makefile {
+sub cpanfile {
     my $self = shift;
     my $appname = $self->appname;
     $appname =~ s[::][-]g;
     my $pmpath = $self->pmpath;
     $pmpath =~ s[$appname][.];
-    my $body = $self->templates->{makefile};
-    $body =~ s[\$appname][$appname]g;
-    $body =~ s[\$pmpath][$pmpath]g;
-    my $file = File::Spec->catfile($self->approot, 'Makefile.PL');
+    my $body = $self->templates->{cpanfile};
+    my $file = File::Spec->catfile($self->approot, 'cpanfile');
     $self->spew($file, $body);
 }
 
@@ -357,32 +355,13 @@ address.generated-by {
 
 ===
 
-makefile
+cpanfile
 ---
-use strict;
-use warnings FATAL => 'all';
-use ExtUtils::MakeMaker;
+requires 'Nephia' => '0';
 
-WriteMakefile(
-    NAME             => '$appname',
-    AUTHOR           => q{clever guy <who@example.com>},
-    VERSION_FROM     => '$pmpath',
-    ABSTRACT_FROM    => '$pmpath',
-    LICENSE          => 'Artistic_2_0',
-    PL_FILES         => {},
-    MIN_PERL_VERSION => 5.008,
-    CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => 0,
-    },
-    BUILD_REQUIRES => {
-        'Test::More' => 0,
-    },
-    PREREQ_PM => {
-        'Nephia' => '0',
-    },
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => '$appname-*' },
-);
+on build => sub {
+    requires 'Test::More';
+};
 
 
 ===
