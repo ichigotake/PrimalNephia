@@ -12,7 +12,7 @@ my $item = 'ひのきのぼう';
 
 path '/' => sub {
     return {
-        template => 'index.tx',
+        template => 'index.html',
         title => 'Nephia::TestApp',
     };
 };
@@ -46,7 +46,7 @@ path '/configtest' => sub {
 
 path '/nihongo' => sub {
     return {
-        template => 'index.tx',
+        template => 'index.html',
         title => '日本語であそぼ',
     };
 };

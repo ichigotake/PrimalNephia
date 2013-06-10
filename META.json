@@ -4,7 +4,7 @@
       "ytnobody <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.4.5, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Minilla/v0.4.9, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -59,7 +59,7 @@
             "JSON" : "0",
             "Plack" : "0",
             "Router::Simple" : "0",
-            "Text::Xslate" : "0"
+            "Text::MicroTemplate::File" : "0"
          }
       }
    },

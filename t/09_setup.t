@@ -44,7 +44,7 @@ create path Verdure-Memory/t
 spew into file Verdure-Memory/app.psgi
 create path Verdure-Memory/lib/Verdure
 spew into file Verdure-Memory/lib/Verdure/Memory.pm
-spew into file Verdure-Memory/view/index.tx
+spew into file Verdure-Memory/view/index.html
 spew into file Verdure-Memory/root/static/style.css
 spew into file Verdure-Memory/cpanfile
 spew into file Verdure-Memory/t/001_basic.t
