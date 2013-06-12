@@ -206,7 +206,14 @@ You can look static-files that is into root directory via HTTP.
 
 You may use plugins for Nephia, as like followings.
 
-  nephia_plugin 'Response::YAML', 'Response::XML';
+  use Nephia plugins => [qw[Response::YAML Response::XML]];
+
+or
+
+  BEGIN {
+      use Nephia;
+      nephia_plugin 'Response::YAML', 'Response::XML';
+  }
 
 =head1 HOW TO DEVELOP Nephia PLUGIN
 
@@ -220,11 +227,11 @@ For example.
   use Exporter 'import';
   our @EXPORT = qw[ bark barkbark ];
   
-  sub bark {
+  sub bark () {
       return [200, [], ['Bark!']];
   }
   
-  sub barkbark {
+  sub barkbark (@) {
       return [200, [], [join(' ', 'Bark', @_)]];
   }
   
@@ -233,15 +240,14 @@ For example.
 You can use plugin in above, as like followings.
 
   package Your::App;
-  use Nephia;
-  nephia_plugins 'Bark';
+  use Nephia plugins => ['Bark'];
   
   path '/bark' => sub {
-      bark(); # 'Bark!'
+      bark; # 'Bark!'
   };
   
   path '/barkbark' => sub {
-      barkbark('hoge', 'fuga'); # 'Bark hoge fuga'
+      barkbark 'hoge', 'fuga'; # 'Bark hoge fuga'
   };
 
 =head1 FUNCTIONS
