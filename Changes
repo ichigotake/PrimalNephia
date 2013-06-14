@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+
+0.12 2013-06-14T11:11:42Z
         - import() will execute when plugin is loaded
 
 0.11 2013-06-12T09:22:18Z
