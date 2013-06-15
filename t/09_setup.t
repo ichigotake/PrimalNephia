@@ -52,3 +52,4 @@ spew into file Verdure-Memory/etc/conf/common.pl
 spew into file Verdure-Memory/etc/conf/development.pl
 spew into file Verdure-Memory/etc/conf/staging.pl
 spew into file Verdure-Memory/etc/conf/production.pl
+spew into file Verdure-Memory/.gitignore
