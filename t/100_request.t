@@ -29,12 +29,14 @@ subtest 'accessor' => sub {
     ok !Encode::is_utf8($req->parameters_raw->{'foo'}), 'not decoded';
 };
 
-my $uri = $req->uri;
-isa_ok $uri, 'URI';
-is $uri.'', "http://$host$path?$query";
+subtest 'uri' => sub {
+    my $uri = $req->uri;
+    isa_ok $uri, 'URI';
+    is $uri.'', "http://$host$path?$query";
 
-my $base = $req->base;
-isa_ok $base, 'URI';
-is $base.'', "http://$host/";
+    my $base = $req->base;
+    isa_ok $base, 'URI';
+    is $base.'', "http://$host/";
+};
 
 done_testing;

@@ -5,6 +5,7 @@ use warnings;
 use parent 'Plack::Request';
 use Encode;
 use Hash::MultiValue;
+use URL::Encode;
 
 sub uri {
     my $self = shift;
@@ -27,7 +28,7 @@ sub body_parameters {
 
 sub query_parameters {
     my ($self) = @_;
-    $self->{query_parameters} ||= $self->_decode_parameters($self->SUPER::query_parameters);
+    $self->{query_parameters} ||= $self->_decode_parameters($self->query_parameters_raw);
 }
 
 sub _decode_parameters {
@@ -52,14 +53,17 @@ sub parameters {
 sub body_parameters_raw {
     shift->SUPER::body_parameters;
 }
+
 sub query_parameters_raw {
-    shift->SUPER::query_parameters;
+    my $self = shift;
+    my $env  = $self->{env};
+    $env->{'plack.request.query'} ||= Hash::MultiValue->new(@{URL::Encode::url_params_flat($env->{'QUERY_STRING'})});
 }
 
 sub parameters_raw {
     my $self = shift;
-    $self->env->{'plack.request.merged'} ||= do {
-        my $query = $self->SUPER::query_parameters;
+    $self->{env}{'plack.request.merged'} ||= do {
+        my $query = $self->query_parameters_raw;
         my $body  = $self->SUPER::body_parameters;
         Hash::MultiValue->new( $query->flatten, $body->flatten );
     };
