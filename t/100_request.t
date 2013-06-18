@@ -17,6 +17,11 @@ my $req = Nephia::Request->new({
     PATH_INFO      => $path,
 });
 
+subtest 'isa' => sub {
+    isa_ok $req, 'Nephia::Request';
+    isa_ok $req, 'Plack::Request';
+};
+
 subtest 'normal' => sub {
     ok Encode::is_utf8($req->param('foo')), 'decoded';
     ok Encode::is_utf8($req->query_parameters->{'foo'}), 'decoded';
