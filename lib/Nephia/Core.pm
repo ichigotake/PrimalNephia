@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Exporter 'import';
-use Plack::Request;
+use Nephia::Request;
 use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
@@ -25,7 +25,7 @@ sub _path {
         $path, 
         {
             action => sub {
-                my $req = Plack::Request->new( shift );
+                my $req = Nephia::Request->new( shift );
                 my $param = shift;
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
@@ -128,11 +128,15 @@ sub app {
     };
 }
 
+{
+    my $_json;
+    sub _json { $_json ||= JSON->new->utf8 }
+}
 sub json_res {
     my $res = shift;
-    my $body = JSON->new->utf8->encode( $res );
-    return [ 200, 
-        [ 
+    my $body = _json->encode( $res );
+    return [ 200,
+        [
             'Content-type'           => 'application/json',
             'X-Content-Type-Options' => 'nosniff',  ### For IE 9 or later. See http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-1297
             'X-Frame-Options'        => 'DENY',     ### Suppress loading web-page into iframe. See http://blog.mozilla.org/security/2010/09/08/x-frame-options/

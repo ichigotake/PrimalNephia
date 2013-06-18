@@ -17,7 +17,7 @@ path '/' => sub {
 
 path '/json' => sub {
     my $query = req->param('q');
-    return $query ? 
+    return $query ?
         { query => $query, message => 'Query OK' } :
         { message => 'Please input a query' }
     ;
