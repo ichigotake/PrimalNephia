@@ -33,6 +33,17 @@ sub new {
     return bless { %opts }, $class;
 }
 
+sub get_version {
+    my $self = shift;
+    my $version;
+    {
+        use Nephia ();
+        $version = $Nephia::VERSION;
+        no Nephia;
+    };
+    return $version;
+}
+
 sub _parse_template_data {
     my @data = @_;
     return +{

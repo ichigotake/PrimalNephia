@@ -29,6 +29,13 @@ my($out, $err, @res) = capture {
 is $err, '', 'setup error';
 is $out, join('',(<DATA>)), 'setup step';
 
+my $version = $setup->get_version;
+{
+    use Nephia ();
+    is $version, $Nephia::VERSION, 'get version';
+    no Nephia;
+}
+
 undef($guard);
 
 done_testing;
