@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use utf8;
 use Nephia::Request;
-use URI::Escape;
 use Encode;
 use Test::More;
 
