@@ -4,7 +4,7 @@
       "ytnobody <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.4.9, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -46,8 +46,10 @@
          }
       },
       "runtime" : {
+         "recommends" : {
+            "URL::Encode::XS" : "0"
+         },
          "requires" : {
-            "Capture::Tiny" : "0",
             "Class::Accessor::Lite" : "0",
             "Config::Micro" : "0",
             "Cwd" : "0",
@@ -55,11 +57,17 @@
             "Exporter" : "0",
             "File::Basename" : "0",
             "File::Spec" : "0",
-            "Guard" : "0",
             "JSON" : "0",
             "Plack" : "0",
             "Router::Simple" : "0",
-            "Text::MicroTemplate::File" : "0"
+            "Text::MicroTemplate::File" : "0",
+            "URL::Encode" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Capture::Tiny" : "0",
+            "Guard" : "0"
          }
       }
    },
@@ -77,6 +85,9 @@
    },
    "version" : "0.12",
    "x_contributors" : [
-      "Takayuki Otake <k.wisiiy@gmail.com>"
+      "papix <mail@papix.net>",
+      "mackee <macopy123@gmail.com>",
+      "ichigotake <k.wisiiy@gmail.com>",
+      "Masayuki Matsuki <y.songmu@gmail.com>"
    ]
 }
