@@ -5,13 +5,13 @@ use Plack::Test;
 use HTTP::Request::Common;
 use JSON;
 use utf8;
-use Encode;
+use Encode qw/encode_utf8/;
 
 use lib qw( ./t/nephia-test_app/lib );
 use Nephia::TestApp;
 use t::Util;
 
-test_psgi 
+test_psgi
     app => Nephia::TestApp->run( test_config ),
     client => sub {
         my $cb = shift;
@@ -26,11 +26,11 @@ test_psgi
         };
 
         subtest "request_with_query" => sub {
-            my $query = Encode::encode( 'utf8', 'おれおれ' );
-            my $res = $cb->(GET "/json?q=$query" );
+            my $query = 'おれおれ';
+            my $res = $cb->(GET "/json?q=". encode_utf8($query) );
             is $res->code, 200;
             is $res->content_type, 'application/json';
-            is $res->content_length, 57;
+            is $res->content_length, 45;
             my $json = JSON->new->utf8->decode( $res->content );
             is $json->{message}, 'Query OK';
             is $json->{query}, $query;
