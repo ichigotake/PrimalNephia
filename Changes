@@ -5,6 +5,7 @@ Revision history for Perl extension Nephia
         - wrap request-class with Nephia::request [songmu]
         - expand number of testfile
         - stop using 'Plack::Middleware::ContentLength' internally
+        - implement get_version() feature into Setup.pm
 
 0.12 2013-06-14T11:11:42Z
         - import() will execute when plugin is loaded
