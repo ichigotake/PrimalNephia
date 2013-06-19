@@ -20,6 +20,7 @@ our $VIEW;
 our $CONFIG = {};
 our $CHARSET = 'UTF-8';
 our $APP_MAP = {};
+our $APP_ROOT;
 
 sub _path {
     my ( $path, $code, $methods, $target_class ) = @_;
@@ -149,7 +150,6 @@ sub run {
     $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
     $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
     return builder { 
-        enable "ContentLength";
         enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
         $class->app;
     };
