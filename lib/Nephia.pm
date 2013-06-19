@@ -296,6 +296,8 @@ ichigotake
 
 papix
 
+and Nephia contributors, hachioji.pm
+
 =head1 SEE ALSO
 
 Plack::Request

@@ -258,6 +258,8 @@ ichigotake
 
 papix
 
+and Nephia contributors, hachioji.pm
+
 # SEE ALSO
 
 Plack::Request
