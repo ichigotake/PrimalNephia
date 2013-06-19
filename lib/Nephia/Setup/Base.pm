@@ -370,8 +370,8 @@ cpanfile
 ---
 requires 'Nephia' => '0';
 
-on build => sub {
-    requires 'Test::More';
+on test => sub {
+    requires 'Test::More', '0.98';
 };
 
 
