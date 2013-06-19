@@ -8,19 +8,34 @@ use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
+use Nephia::ClassLoader;
 use JSON ();
 use FindBin;
 use Encode;
+use Carp qw/croak/;
 
 our @EXPORT = qw[ get post put del path req res param run config app nephia_plugins ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
 our $CHARSET = 'UTF-8';
+our $APP_MAP = {};
 
 sub _path {
-    my ( $path, $code, $methods ) = @_;
+    my ( $path, $code, $methods, $target_class ) = @_;
     my $caller = caller();
+
+    if (
+        $target_class
+        && exists $APP_MAP->{$target_class}
+        && $APP_MAP->{$target_class}->{path}
+    ) {
+        $path =~ s!^/!!g;
+        my @paths = ($APP_MAP->{$target_class}->{path});
+        push @paths, $path if length($path) > 0;
+        $path = join '/', @paths;
+    }
+
     $MAPPER->connect(
         $path, 
         {
@@ -48,6 +63,25 @@ sub _path {
         },
         $methods ? { method => $methods } : undef,
     );
+
+}
+
+sub _submap {
+    my ( $path, $code, $base_class ) = @_;
+
+    $code =~ s/^\+/$base_class\::/g;
+
+    eval {
+        $APP_MAP->{$code}->{path} = $path;
+        Nephia::ClassLoader->load($code);
+        import $code;
+    };
+    if ($@) {
+        my $e = $@;
+        chomp $e;
+        $e =~ s/\ at\ .*$//g;
+        croak $e;
+    }
 }
 
 sub get ($&) {
@@ -72,7 +106,13 @@ sub del ($&) {
 
 sub path ($@) {
     my ( $path, $code, $methods ) = @_;
-    _path( $path, $code, $methods );
+    my $caller = caller();
+    if ( ref $code eq "CODE" ) {
+        _path( $path, $code, $methods, $caller );
+    }
+    else {
+        _submap( $path, $code, $caller );
+    }
 }
 
 sub res (&) {
