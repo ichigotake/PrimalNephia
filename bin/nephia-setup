@@ -24,7 +24,15 @@ $setup->create;
 sub help {
     print <<EOF;
 Usage:
-nephia-setup AppName [--flavor Flavor::Name]
+
+to create new application, 
+
+  nephia-setup AppName [--flavor Flavor::Name]
+
+show Nephia version,
+
+  nephia-setup --version
+
 EOF
     exit;
 }
