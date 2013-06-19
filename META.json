@@ -1,7 +1,7 @@
 {
    "abstract" : "Mini WAF",
    "author" : [
-      "ytnobody <ytnobody@gmail.com>"
+      "C<ytnobody> <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.130880",
@@ -25,22 +25,19 @@
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "Test::More" : "0"
-         }
-      },
       "configure" : {
          "requires" : {
             "CPAN::Meta" : "0",
             "CPAN::Meta::Prereqs" : "0",
-            "Module::Build" : "0.38"
+            "Module::Build" : "0.38",
+            "perl" : "5.010001"
          }
       },
       "develop" : {
          "requires" : {
             "Test::CPAN::Meta" : "0",
             "Test::MinimumVersion" : "0.10108",
+            "Test::Perl::Critic" : "0",
             "Test::Pod" : "1.41",
             "Test::Spellunker" : "v0.2.7"
          }
@@ -51,23 +48,20 @@
          },
          "requires" : {
             "Class::Accessor::Lite" : "0",
-            "Config::Micro" : "0",
-            "Cwd" : "0",
-            "Encode" : "0",
-            "Exporter" : "0",
-            "File::Basename" : "0",
-            "File::Spec" : "0",
             "JSON" : "0",
             "Plack" : "0",
             "Router::Simple" : "0",
             "Text::MicroTemplate::File" : "0",
-            "URL::Encode" : "0"
+            "URL::Encode" : "0",
+            "parent" : "0"
          }
       },
       "test" : {
          "requires" : {
             "Capture::Tiny" : "0",
-            "Guard" : "0"
+            "Guard" : "0",
+            "HTTP::Request::Common" : "0",
+            "Test::More" : "0.98"
          }
       }
    },
@@ -88,6 +82,7 @@
       "papix <mail@papix.net>",
       "mackee <macopy123@gmail.com>",
       "ichigotake <k.wisiiy@gmail.com>",
-      "Masayuki Matsuki <y.songmu@gmail.com>"
+      "Masayuki Matsuki <y.songmu@gmail.com>",
+      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
    ]
 }
