@@ -10,9 +10,9 @@ use Class::Accessor::Lite (
 sub new {
     my ($class, %opts) = @_;
     $opts{tag}      ||= '<?= ... ?>';
-    $opts{arrow}    ||= '->';
+    $opts{arrow}    ||= '}->{';
     $opts{argument} ||= '$c->{...}';
-    $opts{replace_table} ||= [];
+    $opts{replace_table} ||= [qr|^| => '? my $c = shift;'."\n"];
     bless +{%opts}, $class;
 }
 

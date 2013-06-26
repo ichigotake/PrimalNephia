@@ -29,7 +29,7 @@ sub new {
             push @template_data, (<$_dh>);
         }
     }
-    $opts{meta_template} = Nephia::MetaTemplate->new(replace_table => [qr|^| => '? my $c = shift;'."\n"]);
+    $opts{meta_template} = Nephia::MetaTemplate->new;
     $opts{templates} = _parse_template_data( @template_data );
 
     return bless { %opts }, $class;
