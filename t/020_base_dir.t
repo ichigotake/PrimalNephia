@@ -78,4 +78,23 @@ EOS
     is $got, File::Spec->catfile($current_dir, NEPHIA_APP), 'should be got app root rightly';
 };
 
+subtest 'psgi file' => sub {
+    my $psgi_file = 'app.psgi';
+    do {
+        open my $fh, '>', $psgi_file;
+        print $fh <<'EOS';
+use strict;
+use warnings;
+use FindBin;
+
+use lib ("$FindBin::Bin/lib", "$FindBin::Bin/extlib/lib/perl5");
+use Nephia;
+print base_dir;
+exit;
+EOS
+    };
+    my ($got) = capture { system 'plackup', '-I' . LIB };
+    is $got, File::Spec->catfile($current_dir, NEPHIA_APP), 'should be got app root rightly';
+};
+
 done_testing;
