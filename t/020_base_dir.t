@@ -26,7 +26,7 @@ system $^X, '-I' . LIB, $nephia_setup, NEPHIA_APP;
 chdir NEPHIA_APP;
 
 subtest 'top level' => sub {
-    do {
+    {
         open my $fh, '>', TEST_SCRIPT;
         print $fh <<'EOS';
 use strict;
@@ -38,7 +38,7 @@ EOS
         print $fh NEPHIA_APP . '::' . BASE_DIR_FUNC . '();';
     };
 
-    do {
+    {
         open my $fh, '>>', File::Spec->catfile('lib', NEPHIA_APP . '.pm');
         print $fh 'sub ' . BASE_DIR_FUNC . ' { print base_dir; }';
     };
@@ -49,7 +49,7 @@ EOS
 
 subtest 'child' => sub {
     my $child_module = 'child';
-    do {
+    {
         open my $fh, '>', TEST_SCRIPT;
         print $fh <<'EOS';
 use strict;
@@ -62,7 +62,7 @@ EOS
     };
 
     mkpath(File::Spec->catfile('lib', NEPHIA_APP));
-    do {
+    {
         open my $fh, '>', File::Spec->catfile('lib', NEPHIA_APP,  "$child_module.pm");
         print $fh "package " . NEPHIA_APP . "::$child_module;\n";
         print $fh <<'EOS';
@@ -80,7 +80,7 @@ EOS
 
 subtest 'psgi file' => sub {
     my $psgi_file = 'app.psgi';
-    do {
+    {
         open my $fh, '>', $psgi_file;
         print $fh <<'EOS';
 use strict;
