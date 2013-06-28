@@ -33,8 +33,9 @@ sub after ($&) {
     my ($method_name, $coderef) = @_;
     Nephia::DSLModifier::around($method_name, sub {
         my $orig = pop; 
-        $orig->(@_);
+        my @res = $orig->(@_);
         $coderef->(@_);
+        ( @res );
     });
 }
 
