@@ -40,3 +40,45 @@ sub after ($&) {
 }
 
 1;
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+Nephia::DSLModifier - DSL Modifier for Nephia
+
+=head1 SYNOPSIS
+
+    # fetch coderef of "res" DSL
+    my $coderef = origin 'res';
+    
+    # add logic before "res" DSL
+    before 'res' => sub {
+        ...
+    };
+    
+    # add logic after "res" DSL
+    after 'res' => sub {
+        ...
+    };
+    
+    # modify "res" DSL
+    around 'res' => sub {
+        my $origin = pop;
+        my $reponse = $origin->( @_ );
+        ...
+        return $response;
+    };
+
+=head1 DESCRIPTION
+
+It provides modifier commands that modifies Nephia DSL.
+
+=head1 AUTHOR
+
+C<ytnobody>
+
+=cut
+
