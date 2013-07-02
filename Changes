@@ -1,6 +1,7 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - refactor: Split DSLModifier as external module
 
 0.22 2013-06-28T15:16:13Z
         - feature : add DSL Modifier
