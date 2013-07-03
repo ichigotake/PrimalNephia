@@ -1,6 +1,7 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - feature : add cookie / set_cookie DSL
 
 0.24 2013-07-03T01:52:36Z
         - bug fix : fix logic that checks existance of plugin coderef
