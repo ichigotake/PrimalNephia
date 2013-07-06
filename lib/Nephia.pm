@@ -2,7 +2,7 @@ package Nephia;
 use strict;
 use warnings;
 use File::Spec;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 sub import {
     my ($class, %opts) = @_;
