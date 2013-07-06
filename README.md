@@ -15,6 +15,8 @@ Nephia - Mini WAF
 
 Nephia is a mini web-application framework.
 
+__This software is still alpha quality. Its API may change without notice.__ 
+
 # MOUNT A CONTROLLER
 
 Use "path" function as following in lib/MyApp.pm .
