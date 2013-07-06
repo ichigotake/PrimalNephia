@@ -4,7 +4,7 @@
       "C<ytnobody> <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.5, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.131560",
    "license" : [
       "perl_5"
    ],
@@ -70,13 +70,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/papix/Nephia/issues"
+         "web" : "https://github.com/ytnobody/Nephia/issues"
       },
-      "homepage" : "https://github.com/papix/Nephia",
+      "homepage" : "https://github.com/ytnobody/Nephia",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/papix/Nephia.git",
-         "web" : "https://github.com/papix/Nephia"
+         "url" : "git://github.com/ytnobody/Nephia.git",
+         "web" : "https://github.com/ytnobody/Nephia"
       }
    },
    "version" : "0.26",
@@ -86,7 +86,7 @@
       "Masayuki Matsuki <y.songmu@gmail.com>",
       "mackee <macopy123[attttt]gmai.com>",
       "moznion <moznion@gmail.com>",
-      "ytnobody / satoshi azuma <ytnobody@gmail.com>",
-      "papix <mail@papix.net>"
+      "papix <mail@papix.net>",
+      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
    ]
 }

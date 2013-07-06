@@ -1,6 +1,7 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - refactor : add trigger "required_modules" in Nephia::Setup
 
 0.26 2013-07-06T07:39:10Z
         - feature : modify to return the query parameter that specified when given an argument to param DSL 
