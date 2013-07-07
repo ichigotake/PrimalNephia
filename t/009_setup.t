@@ -62,6 +62,7 @@ create path Verdure-Memory/view
 create path Verdure-Memory/root
 create path Verdure-Memory/root/static
 create path Verdure-Memory/t
+spew into file Verdure-Memory/Changes
 spew into file Verdure-Memory/app.psgi
 create path Verdure-Memory/lib/Verdure
 spew into file Verdure-Memory/lib/Verdure/Memory.pm

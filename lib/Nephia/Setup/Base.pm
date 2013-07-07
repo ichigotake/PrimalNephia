@@ -69,6 +69,7 @@ sub create {
         $self->mkpath($self->approot, @path);
     } qw( lib etc etc/conf view root root/static t );
 
+    $self->changes_file;
     $self->psgi_file;
     $self->app_class_file;
     $self->index_template_file;
@@ -141,6 +142,15 @@ sub css_file {
     my $self = shift;
     my $body = $self->templates->{css_file};
     my $file = File::Spec->catfile($self->approot, qw/root static style.css/);
+    $self->spew($file, $body);
+}
+
+sub changes_file {
+    my $self = shift;
+    my $body = $self->templates->{Changes};
+    my $appname = $self->appname;
+    $body =~ s[\$appname][$appname]g;
+    my $file = File::Spec->catfile($self->approot, qw/Changes/);
     $self->spew($file, $body);
 }
 
@@ -440,11 +450,30 @@ my $basedir = File::Spec->rel2abs(
 
 gitignore_file
 ---
-*.bak
-*.old
+cover_db
+META.yml
+Makefile
+blib
+pm_to_blib
+MANIFEST
+Makefile.old
 nytprof.out
-nytprof/
-*.db
-/local/
-/.carton/
+MANIFEST.bak
+*.sw[po]
+/$appname-*
+/.build
+/_build_params
+/Build
+/_build
+!Build/
+!META.json
+!LICENSE
+MYMETA.*
+inc
+===
+
+Changes
+---
+{{$NEXT}}
+        - original version
 ===

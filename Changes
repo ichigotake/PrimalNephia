@@ -1,7 +1,9 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
-        - fix mojibake in config file
+        - refactor : modify setup more friendly for minilla
+        - refactor : improved generation of cpanfile [papix]
+        - bug fix : fix mojibake in config file [ichigotake]
 
 0.27 2013-07-06T17:07:26Z
         - refactor : add trigger "required_modules" in Nephia::Setup
