@@ -406,6 +406,7 @@ done_testing;
 common_conf
 ---
 ### common config
+use utf8;
 +{
     appname => '$appname',
 };
@@ -414,6 +415,7 @@ common_conf
 conf_file
 ---
 ### environment specific config
+use utf8;
 use File::Spec;
 use File::Basename 'dirname';
 my $basedir = File::Spec->rel2abs(
