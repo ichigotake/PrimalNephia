@@ -4,7 +4,7 @@
       "C<ytnobody> <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Minilla/v0.5.5, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -49,6 +49,7 @@
          },
          "requires" : {
             "Class::Accessor::Lite" : "0",
+            "File::pushd" : "0",
             "JSON" : "0",
             "Plack" : "0",
             "Router::Simple" : "0",
@@ -60,7 +61,6 @@
       "test" : {
          "requires" : {
             "Capture::Tiny" : "0",
-            "File::pushd" : "0",
             "Guard" : "0",
             "HTTP::Request::Common" : "0",
             "Test::More" : "0.98"
@@ -79,7 +79,7 @@
          "web" : "https://github.com/ytnobody/Nephia"
       }
    },
-   "version" : "0.27",
+   "version" : "0.28",
    "x_contributors" : [
       "mackee <macopy123@gmail.com>",
       "Masayuki Matsuki <y.songmu@gmail.com>",
