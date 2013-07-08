@@ -205,6 +205,17 @@ Example:
 
 "/chilapp" connect to "MyApp::Child".
 
+Support to multiple path to SubApp.
+
+Example:
+
+  package MyApp;
+
+  path '/subapp1' => 'SubApp';
+  path '/subapp2' => 'SubApp';
+
+The SubApp connected to "/subapp1" and "/subapp2".
+
 =head2 Using Cookie
 
 If you want to set cookie, use "set_cookie" command.
