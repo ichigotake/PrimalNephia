@@ -1,6 +1,7 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - refactor : support multiple submapper[macopy]
 
 0.29 2013-07-08T06:29:54Z
         - bug fix : fix setup function [papix]
