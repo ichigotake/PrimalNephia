@@ -2,6 +2,7 @@ Revision history for Perl extension Nephia
 
 {{$NEXT}}
         - refactor : support multiple submapper[macopy]
+        - bug fix : skip t/010_flavor.t when git is not installed
 
 0.29 2013-07-08T06:29:54Z
         - bug fix : fix setup function [papix]
