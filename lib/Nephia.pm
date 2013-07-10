@@ -55,7 +55,7 @@ First argument is path for mount a controller. This must be string.
 Second argument is controller-logic. This must be code-reference.
 
 In controller-logic, you may get Plack::Request object as first-argument,
-and controller-logic must return response-value as hash-reference or Plack::Response object.
+and controller-logic must return response-value as hash-reference or Nephia::Response object.
 
 =head2 Basic controller - Makes JSON response
 
@@ -108,7 +108,7 @@ If you not specified C<charset>, it will be 'UTF-8'.
       };
   };
 
-"res" function returns Plack::Response object with some DSL.
+"res" function returns Nephia::Response object with some DSL.
 
 You may specify code-reference that's passed to res() returns some value. These values are passed into arrayref that is as plack response.
 
@@ -326,7 +326,7 @@ Return Plack::Request object. You can call this function in code-reference that 
 
 =head2 res $coderef
 
-Return Plack::Response object with some DSL.
+Return Nephia::Response object with some DSL.
 
 =head2 param 
 
