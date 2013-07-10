@@ -248,12 +248,20 @@ sub config (@) {
 
 sub nephia_plugins (@) {
     my $caller = caller();
-    for my $plugin ( map {'Nephia::Plugin::'.$_} @_ ) {
-        _export_plugin_functions($plugin, $caller);
+    for my $plugin ( _normalize_plugin_names(@_) ) {
+        export_plugin_functions($plugin, $caller);
     }
 };
 
-sub _export_plugin_functions {
+sub normalize_plugin_names {
+    my @plugins = @_;
+
+    map {
+        /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_"
+    } @plugins;
+}
+
+sub export_plugin_functions {
     my ($plugin, $caller) = @_;
 
     Module::Load::load($plugin, 'import');

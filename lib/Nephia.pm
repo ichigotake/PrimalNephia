@@ -17,8 +17,8 @@ sub import {
     my $caller = caller;
     Nephia::Core->export_to_level(1);
 
-    for my $plugin ( map {"Nephia::Plugin::$_"} @plugins ) {
-        Nephia::Core::_export_plugin_functions($plugin, $caller);
+    for my $plugin ( Nephia::Core::normalize_plugin_names(@plugins) ) {
+        Nephia::Core::export_plugin_functions($plugin, $caller);
     }
 }
 
