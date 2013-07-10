@@ -4,6 +4,8 @@ use warnings;
 use File::Spec;
 our $VERSION = '0.30';
 
+use Nephia::Core;
+
 sub import {
     my ($class, %opts) = @_;
     my @plugins = ! $opts{plugins} ? () :
@@ -11,23 +13,18 @@ sub import {
                   ( $opts{plugins} )
     ;
 
-    no strict 'refs';
-
     my $caller = caller;
-    use Nephia::Core;
-
-    for my $func (grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{'Nephia::Core::'}) {
-        *{$caller.'::'.$func} = *{'Nephia::Core::'.$func};
-    }
+    Nephia::Core->export_to_level(1);
 
     for my $plugin ( map {"Nephia::Plugin::$_"} @plugins ) {
         require File::Spec->catfile(split/::/, $plugin.'.pm');
+        $plugin->import if $plugin->can('import');
+
         {
-            no warnings 'once'; ### suppress warning for fetching import coderef
-            $plugin->import if *{$plugin."::import"}{CODE};
-        }
-        for my $func (grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{$plugin.'::'}) {
-            *{$caller.'::'.$func} = *{$plugin.'::'.$func};
+            no strict 'refs';
+            for my $func (grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{$plugin.'::'}) {
+                *{$caller.'::'.$func} = *{$plugin.'::'.$func};
+            }
         }
     }
 }

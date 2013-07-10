@@ -2,7 +2,7 @@ package Nephia::Core;
 use strict;
 use warnings;
 
-use Exporter 'import';
+use parent 'Exporter';
 use Nephia::Request;
 use Plack::Response;
 use Plack::Builder;
