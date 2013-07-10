@@ -2,23 +2,24 @@ package Nephia::Core;
 use strict;
 use warnings;
 
-use Exporter 'import';
+use parent 'Exporter';
 use Nephia::Request;
 use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
-use Nephia::ClassLoader;
 use JSON ();
 use FindBin;
 use Encode;
 use Carp qw/croak/;
 
+use Module::Load ();
+
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
-our $CHARSET = 'UTF-8';
+our $CHARSET = Encode::find_encoding('UTF-8');
 our $APP_MAP = {};
 our $APP_CODE = {};
 our $APP_ROOT;
@@ -98,17 +99,21 @@ sub _submap {
 
     $package =~ s/^\+/$base_class\::/g;
 
+    $APP_MAP->{$package}->{path} = $path;
+
+    my $file = $package;
+    $file =~ s!::!/!g;
+    $file .= '.pm';
     eval {
-        $APP_MAP->{$package}->{path} = $path;
-        if (Nephia::ClassLoader->is_loaded($package)) {
-            for my $suffix_path (keys %{$APP_CODE->{$package}}) {
+        # XXX dirty and not handling inner package
+        if (!$INC{$file}) {
+            Module::Load::load($package, 'import');
+        }
+        else {
+             for my $suffix_path (keys %{$APP_CODE->{$package}}) {
                 my $app_code = $APP_CODE->{$package}->{$suffix_path};
                 _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
             }
-        }
-        else {
-            Nephia::ClassLoader->load($package);
-            import $package;
         }
     };
     if ($@) {
@@ -243,20 +248,28 @@ sub config (@) {
 
 sub nephia_plugins (@) {
     my $caller = caller();
-    for my $plugin ( map {'Nephia::Plugin::'.$_} @_ ) {
-        _export_plugin_functions($plugin, $caller);
+    for my $plugin ( _normalize_plugin_names(@_) ) {
+        export_plugin_functions($plugin, $caller);
     }
 };
 
-sub _export_plugin_functions {
+sub normalize_plugin_names {
+    my @plugins = @_;
+
+    map {
+        /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_"
+    } @plugins;
+}
+
+sub export_plugin_functions {
     my ($plugin, $caller) = @_;
-    my $plugin_path = File::Spec->catfile(split('::', $plugin)).'.pm';
-    require $plugin_path;
+
+    Module::Load::load($plugin, 'import');
     {
         no strict 'refs';
-        $plugin->import if *{$plugin."::import"}{CODE};
-        my @funcs = grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{$plugin.'::'};
-        *{$caller.'::'.$_} = *{$plugin.'::'.$_} for @funcs;
+        for my $func ( @{"${plugin}::EXPORT"} ){
+            *{"$caller\::$func"} = $plugin->can($func);
+        }
     }
 }
 
