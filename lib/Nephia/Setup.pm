@@ -69,14 +69,8 @@ sub _export_flavor_functions {
 }
 
 sub get_version {
-    my $class = shift;
-    my $version;
-    {
-        use Nephia ();
-        $version = $Nephia::VERSION;
-        no Nephia;
-    };
-    return $version;
+    require Nephia;
+    return $Nephia::VERSION;
 }
 
 1;
