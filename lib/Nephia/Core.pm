@@ -256,7 +256,8 @@ sub normalize_plugin_names {
     my @plugins = @_;
 
     map {
-        /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_"
+        my $plugin = $_;
+        /^\+/ ? $plugin =~ s/^\+// && $plugin : "Nephia::Plugin::$plugin"
     } @plugins;
 }
 
