@@ -1,8 +1,9 @@
 package Nephia::Setup;
 use strict;
 use warnings;
-use Nephia::ClassLoader;
 use Nephia::Setup::Base;
+
+use Module::Load ();
 
 sub new {
     my ( $class, %opts ) = @_;
@@ -39,7 +40,7 @@ sub load_flavor {
     my ($class, $setup, $flavor) = @_;
 
     my $flavor_class = $class.'::'.$flavor;
-    Nephia::ClassLoader->load($flavor_class);
+    Module::Load::load($flavor_class);
 
     my $flavor_rtn = $flavor_class->can('on_load') ? $flavor_class->on_load($setup) : undef;
     if (ref($flavor_rtn) =~ /^Nephia::Setup::/) {

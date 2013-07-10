@@ -8,11 +8,12 @@ use Plack::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
-use Nephia::ClassLoader;
 use JSON ();
 use FindBin;
 use Encode;
 use Carp qw/croak/;
+
+use Module::Load ();
 
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $MAPPER = Router::Simple->new;
@@ -98,17 +99,21 @@ sub _submap {
 
     $package =~ s/^\+/$base_class\::/g;
 
+    $APP_MAP->{$package}->{path} = $path;
+
+    my $file = $package;
+    $file =~ s!::!/!g;
+    $file .= '.pm';
     eval {
-        $APP_MAP->{$package}->{path} = $path;
-        if (Nephia::ClassLoader->is_loaded($package)) {
-            for my $suffix_path (keys %{$APP_CODE->{$package}}) {
+        # XXX dirty and not handling inner package
+        if (!$INC{$file}) {
+            Module::Load::load($package, 'import');
+        }
+        else {
+             for my $suffix_path (keys %{$APP_CODE->{$package}}) {
                 my $app_code = $APP_CODE->{$package}->{$suffix_path};
                 _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
             }
-        }
-        else {
-            Nephia::ClassLoader->load($package);
-            import $package;
         }
     };
     if ($@) {

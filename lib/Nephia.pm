@@ -5,6 +5,7 @@ use File::Spec;
 our $VERSION = '0.30';
 
 use Nephia::Core;
+use Module::Load ();
 
 sub import {
     my ($class, %opts) = @_;
@@ -17,8 +18,7 @@ sub import {
     Nephia::Core->export_to_level(1);
 
     for my $plugin ( map {"Nephia::Plugin::$_"} @plugins ) {
-        require File::Spec->catfile(split/::/, $plugin.'.pm');
-        $plugin->import if $plugin->can('import');
+        Module::Load::load($plugin, 'import');
 
         {
             no strict 'refs';
