@@ -267,8 +267,9 @@ sub export_plugin_functions {
     Module::Load::load($plugin, 'import');
     {
         no strict 'refs';
-        my @funcs = grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{$plugin.'::'};
-        *{$caller.'::'.$_} = *{$plugin.'::'.$_} for @funcs;
+        for my $func ( @{"${plugin}::EXPORT"} ){
+            *{"$caller\::$func"} = $plugin->can($func);
+        }
     }
 }
 
