@@ -18,14 +18,7 @@ sub import {
     Nephia::Core->export_to_level(1);
 
     for my $plugin ( map {"Nephia::Plugin::$_"} @plugins ) {
-        Module::Load::load($plugin, 'import');
-
-        {
-            no strict 'refs';
-            for my $func (grep { $_ =~ /^[a-z]/ && $_ ne 'import' } keys %{$plugin.'::'}) {
-                *{$caller.'::'.$func} = *{$plugin.'::'.$func};
-            }
-        }
+        Nephia::Core::_export_plugin_functions($plugin, $caller);
     }
 }
 
