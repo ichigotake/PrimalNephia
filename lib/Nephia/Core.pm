@@ -97,16 +97,15 @@ sub _path {
 sub _submap {
     my ( $path, $package, $base_class ) = @_;
 
-    $package =~ s/^\+/$base_class\::/g;
+    if (!($package =~ s/^\+//g)) {
+        $package = join '::', $base_class, $package;
+    }
 
     $APP_MAP->{$package}->{path} = $path;
 
-    my $file = $package;
-    $file =~ s!::!/!g;
-    $file .= '.pm';
     eval {
         # XXX dirty and not handling inner package
-        if (!$INC{$file}) {
+        if (!$APP_CODE->{$package}) {
             Module::Load::load($package, 'import');
         }
         else {
