@@ -19,7 +19,7 @@ our @EXPORT = qw[ get post put del path req res param path_param nip run config 
 our $MAPPER = Router::Simple->new;
 our $VIEW;
 our $CONFIG = {};
-our $CHARSET = 'UTF-8';
+our $CHARSET = Encode::find_encoding('UTF-8');
 our $APP_MAP = {};
 our $APP_CODE = {};
 our $APP_ROOT;
