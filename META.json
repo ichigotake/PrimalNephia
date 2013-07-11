@@ -81,7 +81,7 @@
          "web" : "https://github.com/ytnobody/Nephia"
       }
    },
-   "version" : "0.30",
+   "version" : "0.31",
    "x_contributors" : [
       "moznion <moznion@gmail.com>",
       "ichigotake <k.wisiiy@gmail.com>",
@@ -89,6 +89,6 @@
       "papix <mail@papix.net>",
       "mackee <macopy123@gmail.com>",
       "Masayuki Matsuki <y.songmu@gmail.com>",
-      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
+      "ytnobody <ytnobody@gmail.com>"
    ]
 }
