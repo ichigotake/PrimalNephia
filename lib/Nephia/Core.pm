@@ -175,10 +175,11 @@ sub res (&) {
 
 sub run {
     my $class = shift;
+    my $base_dir = base_dir($class);
     $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
-    $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
+    $VIEW = Nephia::View->new( ( $CONFIG->{view} ? %{$CONFIG->{view}} : () ), template_path => File::Spec->catdir($base_dir, 'view') );
 
-    my $root = File::Spec->catfile(base_dir($class), 'root');
+    my $root = File::Spec->catfile($base_dir, 'root');
     return builder {
         enable "Static", root => $root, path => qr{^/static/};
         $class->app;
