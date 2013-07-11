@@ -178,7 +178,7 @@ sub run {
     $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
     $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
 
-    my $root = join '/', base_dir($class), 'root';
+    my $root = File::Spec->catfile(base_dir($class), 'root');
     return builder {
         enable "Static", root => $root, path => qr{^/static/};
         $class->app;
