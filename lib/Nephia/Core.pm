@@ -103,7 +103,8 @@ sub _submap {
 
     $APP_MAP->{$package}->{path} = $path;
     if (!$APP_CODE->{$package}) {
-        Module::Load::load($package, 'import');
+        Module::Load::load($package);
+        $package->import if $package->can('import');
     }
     else {
          for my $suffix_path (keys %{$APP_CODE->{$package}}) {
@@ -252,7 +253,8 @@ sub normalize_plugin_names {
 sub export_plugin_functions {
     my ($plugin, $caller) = @_;
 
-    Module::Load::load($plugin, 'import');
+    Module::Load::load($plugin);
+    $plugin->import if $plugin->can('import');
     {
         no strict 'refs';
         for my $func ( @{"${plugin}::EXPORT"} ){
