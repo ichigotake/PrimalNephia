@@ -103,23 +103,14 @@ sub _submap {
     }
 
     $APP_MAP->{$package}->{path} = $path;
-
-    eval {
-        if (!$APP_CODE->{$package}) {
-            Module::Load::load($package, 'import');
+    if (!$APP_CODE->{$package}) {
+        Module::Load::load($package, 'import');
+    }
+    else {
+         for my $suffix_path (keys %{$APP_CODE->{$package}}) {
+            my $app_code = $APP_CODE->{$package}->{$suffix_path};
+            _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
         }
-        else {
-             for my $suffix_path (keys %{$APP_CODE->{$package}}) {
-                my $app_code = $APP_CODE->{$package}->{$suffix_path};
-                _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
-            }
-        }
-    };
-    if ($@) {
-        my $e = $@;
-        chomp $e;
-        $e =~ s/\ at\ .*$//g;
-        croak $e;
     }
 }
 
