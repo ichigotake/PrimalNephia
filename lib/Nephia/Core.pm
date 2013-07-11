@@ -9,7 +9,6 @@ use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
 use JSON ();
-use FindBin;
 use Encode;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
@@ -178,8 +177,10 @@ sub run {
     my $class = shift;
     $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
     $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
+
+    my $root = join '/', base_dir($class), 'root';
     return builder {
-        enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
+        enable "Static", root => $root, path => qr{^/static/};
         $class->app;
     };
 }
@@ -260,8 +261,9 @@ sub export_plugin_functions {
 }
 
 sub base_dir {
-    my ($proto) = caller();
+    my $proto = shift || caller;
 
+    $proto =~ s!::!/!g;
     my $base_dir;
     if (my $libpath = $INC{"$proto.pm"}) {
         $libpath =~ s!\\!/!g; # for win32
