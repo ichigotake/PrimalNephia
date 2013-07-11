@@ -17,9 +17,8 @@ sub import {
     my $caller = caller;
     Nephia::Core->export_to_level(1);
 
-    for my $plugin ( Nephia::Core::normalize_plugin_names(@plugins) ) {
-        Nephia::Core::export_plugin_functions($plugin, $caller);
-    }
+    @_ = @plugins;
+    goto do { Nephia::Core->can('nephia_plugins') } if @plugins;
 }
 
 1;
