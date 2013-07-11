@@ -241,24 +241,33 @@ sub config (@) {
 
 sub nephia_plugins (@) {
     my $caller = caller();
-    for my $plugin ( normalize_plugin_names(@_) ) {
-        export_plugin_functions($plugin, $caller);
+    my @plugins = @_;
+
+    while (@plugins) {
+        my $plugin = shift @plugins;
+        $plugin = _normalize_plugin_name($plugin);
+
+        my $opt = $plugins[0] && ref $plugins[0] ? shift @plugins : undef;
+        _export_plugin_functions($plugin, $caller, $opt);
     }
+
 };
 
-sub normalize_plugin_names {
-    map { /^\+/ ? do {(my $p = $_) =~ s/^\+//; $p} : "Nephia::Plugin::$_" } @_;
+sub _normalize_plugin_name {
+    local $_ = shift;
+    /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_";
 }
 
-sub export_plugin_functions {
-    my ($plugin, $caller) = @_;
+sub _export_plugin_functions {
+    my ($plugin, $pkg, $opt) = @_;
 
     Module::Load::load($plugin);
     $plugin->import if $plugin->can('import');
+    $plugin->load($pkg, $opt) if $plugin->can('load');
     {
         no strict 'refs';
         for my $func ( @{"${plugin}::EXPORT"} ){
-            *{"$caller\::$func"} = $plugin->can($func);
+            *{"$pkg\::$func"} = $plugin->can($func);
         }
     }
 }
