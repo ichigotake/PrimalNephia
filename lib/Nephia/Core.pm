@@ -266,6 +266,7 @@ sub _export_plugin_functions {
     $plugin->load($pkg, $opt) if $plugin->can('load');
     {
         no strict 'refs';
+        no warnings 'redefine';
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
         }
