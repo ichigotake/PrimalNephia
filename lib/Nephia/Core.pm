@@ -4,7 +4,7 @@ use warnings;
 
 use parent 'Exporter';
 use Nephia::Request;
-use Plack::Response;
+use Nephia::Response;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
@@ -12,6 +12,7 @@ use JSON ();
 use FindBin;
 use Encode;
 use Carp qw/croak/;
+use Scalar::Util qw/blessed/;
 
 use Module::Load ();
 
@@ -73,14 +74,14 @@ sub _path {
                         json_res( $res )
                     ;
                 }
-                elsif ( ref $res eq 'Plack::Response' ) {
+                elsif ( blessed $res && $res->isa('Plack::Response') ) {
                     $rtn = $res->finalize;
                 }
                 else {
                     $rtn = $res;
                 }
                 if ($COOKIE) {
-                    my $res_obj = Plack::Response->new(@$rtn);
+                    my $res_obj = Nephia::Response->new(@$rtn);
                     for my $key (keys %$COOKIE) {
                         $res_obj->cookies->{$key} = $COOKIE->{$key};
                     }
@@ -104,7 +105,6 @@ sub _submap {
     $APP_MAP->{$package}->{path} = $path;
 
     eval {
-        # XXX dirty and not handling inner package
         if (!$APP_CODE->{$package}) {
             Module::Load::load($package, 'import');
         }
@@ -156,7 +156,7 @@ sub path ($@) {
 
 sub res (&) {
     my $code = shift;
-    my $res = Plack::Response->new(200);
+    my $res = Nephia::Response->new(200);
     $res->content_type('text/html');
     {
         no strict qw[ refs subs ];
@@ -247,18 +247,13 @@ sub config (@) {
 
 sub nephia_plugins (@) {
     my $caller = caller();
-    for my $plugin ( _normalize_plugin_names(@_) ) {
+    for my $plugin ( normalize_plugin_names(@_) ) {
         export_plugin_functions($plugin, $caller);
     }
 };
 
 sub normalize_plugin_names {
-    my @plugins = @_;
-
-    map {
-        my $plugin = $_;
-        /^\+/ ? $plugin =~ s/^\+// && $plugin : "Nephia::Plugin::$plugin"
-    } @plugins;
+    map { /^\+/ ? do {(my $p = $_) =~ s/^\+//; $p} : "Nephia::Plugin::$_" } @_;
 }
 
 sub export_plugin_functions {
