@@ -9,7 +9,6 @@ use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
 use JSON ();
-use FindBin;
 use Encode;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
@@ -103,23 +102,14 @@ sub _submap {
     }
 
     $APP_MAP->{$package}->{path} = $path;
-
-    eval {
-        if (!$APP_CODE->{$package}) {
-            Module::Load::load($package, 'import');
+    if (!$APP_CODE->{$package}) {
+        Module::Load::load($package, 'import');
+    }
+    else {
+         for my $suffix_path (keys %{$APP_CODE->{$package}}) {
+            my $app_code = $APP_CODE->{$package}->{$suffix_path};
+            _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
         }
-        else {
-             for my $suffix_path (keys %{$APP_CODE->{$package}}) {
-                my $app_code = $APP_CODE->{$package}->{$suffix_path};
-                _path ($suffix_path, $app_code->{code}, $app_code->{methods}, $package);
-            }
-        }
-    };
-    if ($@) {
-        my $e = $@;
-        chomp $e;
-        $e =~ s/\ at\ .*$//g;
-        croak $e;
     }
 }
 
@@ -187,8 +177,10 @@ sub run {
     my $class = shift;
     $CONFIG = scalar @_ > 1 ? +{ @_ } : $_[0];
     $VIEW = Nephia::View->new( $CONFIG->{view} ? %{$CONFIG->{view}} : () );
+
+    my $root = File::Spec->catfile(base_dir($class), 'root');
     return builder {
-        enable "Static", root => "$FindBin::Bin/root/", path => qr{^/static/};
+        enable "Static", root => $root, path => qr{^/static/};
         $class->app;
     };
 }
@@ -269,8 +261,9 @@ sub export_plugin_functions {
 }
 
 sub base_dir {
-    my ($proto) = caller();
+    my $proto = shift || caller;
 
+    $proto =~ s!::!/!g;
     my $base_dir;
     if (my $libpath = $INC{"$proto.pm"}) {
         $libpath =~ s!\\!/!g; # for win32
