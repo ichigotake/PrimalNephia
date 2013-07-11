@@ -1,6 +1,14 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - bug fix : fix bug of reverse prefix in submapper [songmu]
+        - refactor : Implement Nephia::Response [songmu]
+        - refactor : fix Nephia::Setup#get_version for more shortly [songmu]
+        - refactor : remove duplicated code that loading plugins [songmu]
+        - refactor : remove Nephia::ClassLoader and use Module::Load [songmu]
+        - refactor : Nephia::Core inherits Exporter for export_to_level [songmu]
+        - feature : --plugin option enabled in nephia-setup [papix]
+
 
 0.30 2013-07-09T02:27:49Z
         - refactor : support multiple submapper[macopy]
