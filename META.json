@@ -4,7 +4,7 @@
       "C<ytnobody> <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.5, CPAN::Meta::Converter version 2.130880",
+   "generated_by" : "Minilla/v0.5.3, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -81,7 +81,7 @@
          "web" : "https://github.com/ytnobody/Nephia"
       }
    },
-   "version" : "0.31",
+   "version" : "0.32",
    "x_contributors" : [
       "moznion <moznion@gmail.com>",
       "ichigotake <k.wisiiy@gmail.com>",
@@ -89,6 +89,6 @@
       "papix <mail@papix.net>",
       "mackee <macopy123@gmail.com>",
       "Masayuki Matsuki <y.songmu@gmail.com>",
-      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
+      "ytnobody <ytnobody@gmail.com>"
    ]
 }
