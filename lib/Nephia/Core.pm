@@ -61,7 +61,7 @@ sub _path {
         {
             action => sub {
                 my ($env, $path_param) = @_;
-                local $CONTEXT;
+                local $CONTEXT = Nephia::Context->new;
                 my $req = _process_request($env, $path_param);
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
@@ -86,9 +86,7 @@ sub _process_request {
     my $env = process_env($raw_env);
     my $req = Nephia::Request->new($env);
     $req->{path_param} = $path_param;
-    $CONTEXT = Nephia::Context->new(
-        cookie => $req->cookies,
-    );
+    $CONTEXT->{cookie} = $req->cookies;
     return $req;
 }
 
@@ -137,8 +135,6 @@ sub process_content {
     my $content = shift;
     return $content;
 }
-
-sub context () { $CONTEXT }
 
 sub _submap {
     my ( $path, $package, $base_class ) = @_;
@@ -309,12 +305,18 @@ sub _export_plugin_functions {
     my ($plugin, $pkg, $opt) = @_;
 
     Module::Load::load($plugin);
-
-    $plugin->import if $plugin->can('import');
-    $plugin->load($pkg, $opt) if $plugin->can('load');
     {
         no strict 'refs';
         no warnings qw/redefine prototype/;
+        *{$plugin.'::context'} = sub { 
+            my ($key, $val) = @_;
+            $CONTEXT->{$key} = $val if defined $key && defined $val;
+            return defined $key ? $CONTEXT->{$key} : $CONTEXT;
+        };
+
+        $plugin->import if $plugin->can('import');
+        $plugin->load($pkg, $opt) if $plugin->can('load');
+
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
         }

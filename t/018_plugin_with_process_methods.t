@@ -21,7 +21,7 @@ test_psgi
             is $res->header('X-Moz'), 'kieeeee', 'process_response';
             my $json = JSON->new->utf8->decode($res->content);
             is $json->{params}, 'bar', 'process_request';
-            is $json->{message}, 'fii', 'process_content';
+            is $json->{message}, 'fii職質', 'process_content';
         };
     }
 ;
