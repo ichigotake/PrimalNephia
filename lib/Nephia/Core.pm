@@ -61,11 +61,8 @@ sub _path {
         {
             action => sub {
                 my ($env, $path_param) = @_;
-                my $req = Nephia::Request->new( $env );
-                $req->{path_param} = $path_param;
-                local $CONTEXT = Nephia::Context->new(
-                    cookie => $req->cookies,
-                );
+                local $CONTEXT;
+                my $req = _process_request($env, $path_param);
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
                 local *{$caller."::req"} = sub{ $req };
@@ -76,33 +73,72 @@ sub _path {
                 local *{$caller."::path_param"} = sub (;$) { $req->path_param(shift) };
                 local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
                 my $res = $code->( $req, $req->path_param );
-                my $rtn;
-                if ( ref $res eq 'HASH' ) {
-                    $rtn = eval { $res->{template} } ?
-                        render( $res ) :
-                        json_res( $res )
-                    ;
-                }
-                elsif ( blessed $res && $res->isa('Plack::Response') ) {
-                    $rtn = $res->finalize;
-                }
-                else {
-                    $rtn = $res;
-                }
-                if ($CONTEXT->{cookie}) {
-                    my $res_obj = Nephia::Response->new(@$rtn);
-                    for my $key (keys %{$CONTEXT->{cookie}}) {
-                        $res_obj->cookies->{$key} = $CONTEXT->{cookie}{$key};
-                    }
-                    $rtn = $res_obj->finalize;
-                }
-                return $rtn;
+                return _process_response($res);
             },
         },
         $methods ? { method => $methods } : undef,
     );
 
 }
+
+sub _process_request {
+    my ($raw_env, $path_param) = @_;
+    my $env = process_env($raw_env);
+    my $req = Nephia::Request->new($env);
+    $req->{path_param} = $path_param;
+    $CONTEXT = Nephia::Context->new(
+        cookie => $req->cookies,
+    );
+    return $req;
+}
+
+sub process_env {
+    my $env = shift;
+    return $env;
+}
+
+sub _process_response {
+    my $raw_res = shift;
+    my $res;
+    if ( ref $raw_res eq 'HASH' ) {
+        $res = Nephia::Response->new(@{
+            eval { $raw_res->{template} } ? 
+                render($raw_res) : 
+                json_res($raw_res)
+        });
+    }
+    elsif ( blessed $raw_res && $raw_res->isa('Plack::Response') ) {
+        $res = $raw_res;
+    }
+    else {
+        $res = Nephia::Response->new(@{$raw_res});
+    }
+    if ($CONTEXT->{cookie}) {
+        for my $key (keys %{$CONTEXT->{cookie}}) {
+            $res->cookies->{$key} = $CONTEXT->{cookie}{$key};
+        }
+    }
+    $res = process_response($res);
+    if (ref($res->body) eq 'ARRAY') {
+        $res->body->[0] = process_content($res->body->[0]);
+    }
+    else {
+        $res->body( process_content($res->body) );
+    }
+    return $res->finalize;
+}
+
+sub process_response {
+    my $res = shift;
+    return $res;
+}
+
+sub process_content {
+    my $content = shift;
+    return $content;
+}
+
+sub context () { $CONTEXT }
 
 sub _submap {
     my ( $path, $package, $base_class ) = @_;
@@ -281,6 +317,17 @@ sub _export_plugin_functions {
         no warnings qw/redefine prototype/;
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
+        }
+        for my $func (qw/process_env process_response process_content/) {
+            my $plugin_func = $plugin->can($func);
+            if ($plugin_func) {
+                my $orig = \&{$func};
+                *$func = sub {
+                    my $in = shift;
+                    my $out = $plugin_func->($orig->($in));
+                    return $out;
+                }; 
+            }
         }
     }
 }
