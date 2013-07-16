@@ -4,7 +4,7 @@
       "C<ytnobody> <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.5.6, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Minilla/v0.5.5, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -86,9 +86,9 @@
       "moznion <moznion@gmail.com>",
       "ichigotake <k.wisiiy@gmail.com>",
       "mackee <macopy123[attttt]gmai.com>",
-      "papix <mail@papix.net>",
       "Masayuki Matsuki <y.songmu@gmail.com>",
       "mackee <macopy123@gmail.com>",
-      "ytnobody / satoshi azuma <ytnobody@gmail.com>"
+      "papix <mail@papix.net>",
+      "ytnobody <ytnobody@gmail.com>"
    ]
 }
