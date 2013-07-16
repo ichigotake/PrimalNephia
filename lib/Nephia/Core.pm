@@ -20,7 +20,7 @@ use Module::Load ();
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $CONTEXT;
 
-Nephia::GlobalVars->store(
+Nephia::GlobalVars->set(
     mapper   => Router::Simple->new,
     view     => undef,
     config   => {},
@@ -33,10 +33,8 @@ Nephia::GlobalVars->store(
 
 sub _path {
     my ( $path, $code, $methods, $target_class ) = @_;
-    my $caller   = caller();
-    my $app_map  = Nephia::GlobalVars->app_map;
-    my $app_code = Nephia::GlobalVars->app_code;
-    my $mapper   = Nephia::GlobalVars->mapper;
+    my $caller = caller();
+    my ($app_map, $app_code, $mapper) = Nephia::GlobalVars->get(qw/app_map app_code mapper/);
 
     if (
         $target_class
@@ -91,10 +89,10 @@ sub _path {
                 else {
                     $rtn = $res;
                 }
-                if ($CONTEXT->cookie) {
+                if ($CONTEXT->{cookie}) {
                     my $res_obj = Nephia::Response->new(@$rtn);
-                    for my $key (keys %{$CONTEXT->cookie}) {
-                        $res_obj->cookies->{$key} = $CONTEXT->cookie->{$key};
+                    for my $key (keys %{$CONTEXT->{cookie}}) {
+                        $res_obj->cookies->{$key} = $CONTEXT->{cookie}{$key};
                     }
                     $rtn = $res_obj->finalize;
                 }
@@ -109,8 +107,7 @@ sub _path {
 sub _submap {
     my ( $path, $package, $base_class ) = @_;
 
-    my $app_map  = Nephia::GlobalVars->app_map;
-    my $app_code = Nephia::GlobalVars->app_code;
+    my ($app_map, $app_code) = Nephia::GlobalVars->get(qw/app_map app_code/);
 
     if (!($package =~ s/^\+//g)) {
         $package = join '::', $base_class, $package;
@@ -195,8 +192,7 @@ sub run {
     my $config = scalar @_ > 1 ? +{ @_ } : $_[0];
     my $view = Nephia::View->new(($config->{view} ? %{$config->{view}} : ()), template_path => File::Spec->catdir($base_dir, 'view'));
 
-    Nephia::GlobalVars->config($config);
-    Nephia::GlobalVars->view($view);
+    Nephia::GlobalVars->set(config => $config, view => $view);
 
     my $root = File::Spec->catfile($base_dir, 'root');
     return builder {
@@ -207,7 +203,7 @@ sub run {
 
 sub app {
     my $class = shift;
-    my $mapper = Nephia::GlobalVars->mapper;
+    my $mapper = Nephia::GlobalVars->get('mapper');
     return sub {
         my $env = shift;
         if ( my $p = $mapper->match($env) ) {
@@ -221,7 +217,7 @@ sub app {
 
 sub json_res {
     my $res  = shift;
-    my $json = Nephia::GlobalVars->json;
+    my $json = Nephia::GlobalVars->get('json');
     my $body = $json->encode( $res );
     return [ 200,
         [
@@ -236,8 +232,8 @@ sub json_res {
 
 sub render {
     my $res     = shift;
-    my $charset = delete $res->{charset} || Nephia::GlobalVars->charset;
-    my $view    = Nephia::GlobalVars->view;
+    my $charset = delete $res->{charset} || Nephia::GlobalVars->get('charset');
+    my $view    = Nephia::GlobalVars->get('view');
     my $body    = $view->render( $res->{template}, $res );
     return [ 200,
         [ 'Content-type' => "text/html; charset=$charset" ],
@@ -246,12 +242,12 @@ sub render {
 }
 
 sub config (@) {
-    Nephia::GlobalVars->config(
+    Nephia::GlobalVars->set(config => 
         scalar @_ > 1 ? { @_ } :
         ref $_[0] eq 'HASH' ? $_[0] :
         do( $_[0] )
     ) if scalar(@_) > 0;
-    return Nephia::GlobalVars->config;
+    return Nephia::GlobalVars->get('config');
 };
 
 sub nephia_plugins (@) {
@@ -312,12 +308,12 @@ sub base_dir {
 
 sub set_cookie ($$){
     my ($key, $val) = @_;
-    $CONTEXT->cookie->{$key} = $val;
+    $CONTEXT->{cookie}{$key} = $val;
 }
 
 sub cookie ($) {
     my $key = shift;
-    $CONTEXT->cookie->{$key};
+    $CONTEXT->{cookie}{$key};
 }
 
 1;

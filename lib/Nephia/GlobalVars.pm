@@ -4,23 +4,24 @@ use strict;
 use warnings;
 use utf8;
 
-our $AUTOLOAD;
 our $STORED_DATA ||= {};
 
-sub AUTOLOAD {
-    my ($class, $var) = @_;
-    my ($method) = $AUTOLOAD =~ /^$class\:\:([0-9a-z_]+)$/;
-    if ($method) {
-        $STORED_DATA->{$method} = $var if defined $var;
-        return $STORED_DATA->{$method};
-    }
+sub set {
+    my ($class, %data) = @_;
+    $STORED_DATA = {%$STORED_DATA, %data};
 }
 
-sub import {}
+sub get {
+    my ($class, @keys) = @_;
+    my @res = map { $STORED_DATA->{$_} } @keys;
+    return wantarray ? @res : $res[0];
+}
 
-sub store {
-    my ($class, %data) = @_;
-    $STORED_DATA = {%data};
+sub delete {
+    my ($class, @keys) = @_;
+    for my $key (@keys) {
+        delete $STORED_DATA->{$key};
+    }
 }
 
 1;
