@@ -6,6 +6,7 @@ use parent 'Exporter';
 use Nephia::Request;
 use Nephia::Response;
 use Nephia::GlobalVars;
+use Nephia::Context;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
@@ -17,7 +18,7 @@ use Scalar::Util qw/blessed/;
 use Module::Load ();
 
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
-our $COOKIE;
+our $CONTEXT;
 
 Nephia::GlobalVars->store(
     mapper   => Router::Simple->new,
@@ -61,9 +62,12 @@ sub _path {
         $path,
         {
             action => sub {
-                my $req = Nephia::Request->new( shift );
-                $req->{path_param} = shift;
-                local $COOKIE = $req->cookies;
+                my ($env, $path_param) = @_;
+                my $req = Nephia::Request->new( $env );
+                $req->{path_param} = $path_param;
+                local $CONTEXT = Nephia::Context->new(
+                    cookie => $req->cookies,
+                );
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
                 local *{$caller."::req"} = sub{ $req };
@@ -87,10 +91,10 @@ sub _path {
                 else {
                     $rtn = $res;
                 }
-                if ($COOKIE) {
+                if ($CONTEXT->cookie) {
                     my $res_obj = Nephia::Response->new(@$rtn);
-                    for my $key (keys %$COOKIE) {
-                        $res_obj->cookies->{$key} = $COOKIE->{$key};
+                    for my $key (keys %{$CONTEXT->cookie}) {
+                        $res_obj->cookies->{$key} = $CONTEXT->cookie->{$key};
                     }
                     $rtn = $res_obj->finalize;
                 }
@@ -308,12 +312,12 @@ sub base_dir {
 
 sub set_cookie ($$){
     my ($key, $val) = @_;
-    $COOKIE->{$key} = $val;
+    $CONTEXT->cookie->{$key} = $val;
 }
 
 sub cookie ($) {
     my $key = shift;
-    $COOKIE->{$key};
+    $CONTEXT->cookie->{$key};
 }
 
 1;
