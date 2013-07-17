@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - feature : add application class name into context with keyname "app"
+        - bug fix : fix strange specification of charset in http-header
 
 0.34 2013-07-17T01:58:21Z
         - refactor : move global-vars into Nephia::GlobalVars
