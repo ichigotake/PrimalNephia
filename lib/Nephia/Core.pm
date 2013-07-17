@@ -183,12 +183,10 @@ sub del ($&) {
 sub path ($@) {
     my ( $path, $code, $methods ) = @_;
     my $caller = caller();
-    if ( ref $code eq "CODE" ) {
-        _path( $path, $code, $methods, $caller );
-    }
-    else {
-        _submap( $path, $code, $caller );
-    }
+    ref($code) eq "CODE" ? 
+        _path($path, $code, $methods, $caller) :
+        _submap($path, $code, $caller)
+    ;
 }
 
 sub res (&) {
