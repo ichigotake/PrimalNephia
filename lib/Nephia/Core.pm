@@ -24,7 +24,7 @@ Nephia::GlobalVars->set(
     mapper   => Router::Simple->new,
     view     => undef,
     config   => {},
-    charset  => Encode::find_encoding('UTF-8'),
+    charset  => Encode::find_encoding('UTF-8')->mime_name,
     app_map  => {},
     app_code => {},
     app_root => undef,
