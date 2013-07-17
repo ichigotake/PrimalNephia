@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+
+0.35 2013-07-17T11:53:56Z
         - feature : add application class name into context with keyname "app"
         - bug fix : fix strange specification of charset in http-header
         - refactor : use ternary operator in "path" feature
