@@ -14,7 +14,6 @@ sub import {
                   ( $opts{plugins} )
     ;
 
-    my $caller = caller;
     Nephia::Core->export_to_level(1);
 
     @_ = @plugins;
