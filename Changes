@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+
+0.34 2013-07-17T01:58:21Z
         - refactor : move global-vars into Nephia::GlobalVars
         - feature  : add request context(Nephia::Context)
         - feature  : add hooks for development some plugins
