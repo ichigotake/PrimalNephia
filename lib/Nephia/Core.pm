@@ -34,6 +34,7 @@ Nephia::GlobalVars->set(
 sub _path {
     my ( $path, $code, $methods, $target_class ) = @_;
     my $caller = caller();
+    my $app_class = caller(1);
     my ($app_map, $app_code, $mapper) = Nephia::GlobalVars->get(qw/app_map app_code mapper/);
 
     if (
@@ -62,6 +63,7 @@ sub _path {
             action => sub {
                 my ($env, $path_param) = @_;
                 local $CONTEXT = Nephia::Context->new;
+                $CONTEXT->{app} = $app_class;
                 my $req = _process_request($env, $path_param);
                 no strict qw[ refs subs ];
                 no warnings qw[ redefine ];
