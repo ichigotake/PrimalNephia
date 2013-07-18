@@ -44,11 +44,11 @@
       },
       "runtime" : {
          "recommends" : {
-            "Config::Micro" : "0.02",
             "URL::Encode::XS" : "0"
          },
          "requires" : {
             "Class::Accessor::Lite" : "0",
+            "Config::Micro" : "0.02",
             "File::pushd" : "0",
             "JSON" : "0",
             "Module::Load" : "0",
