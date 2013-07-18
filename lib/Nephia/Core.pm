@@ -17,8 +17,6 @@ use Scalar::Util qw/blessed/;
 
 use Module::Load ();
 
-use Data::Dumper;
-
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $CONTEXT;
 
