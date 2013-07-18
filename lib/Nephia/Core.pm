@@ -59,28 +59,31 @@ sub _path {
 
     $mapper->connect(
         $path,
-        {
-            action => sub {
-                my ($env, $path_param) = @_;
-                local $CONTEXT = Nephia::Context->new;
-                $CONTEXT->{app} = $app_class;
-                my $req = _process_request($env, $path_param);
-                no strict qw[ refs subs ];
-                no warnings qw[ redefine ];
-                local *{$caller."::req"} = sub{ $req };
-                local *{$caller."::param"} = sub (;$) {
-                    my $key = shift;
-                    $key ? $req->param($key) : $req->parameters;
-                };
-                local *{$caller."::path_param"} = sub (;$) { $req->path_param(shift) };
-                local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
-                my $res = $code->( $req, $req->path_param );
-                return _process_response($res);
-            },
-        },
+        { action => _build_action($app_class, $caller, $code) },
         $methods ? { method => $methods } : undef,
     );
 
+}
+
+sub _build_action {
+    my ($app_class, $caller, $code) = @_;
+    sub {
+        my ($env, $path_param) = @_;
+        local $CONTEXT = Nephia::Context->new;
+        $CONTEXT->{app} = $app_class;
+        my $req = _process_request($env, $path_param);
+        no strict qw[ refs subs ];
+        no warnings qw[ redefine ];
+        local *{$caller."::req"} = sub{ $req };
+        local *{$caller."::param"} = sub (;$) {
+            my $key = shift;
+            $key ? $req->param($key) : $req->parameters;
+        };
+        local *{$caller."::path_param"} = sub (;$) { $req->path_param(shift) };
+        local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
+        my $res = $code->( $req, $req->path_param );
+        return _process_response($res);
+    };
 }
 
 sub _process_request {
@@ -316,6 +319,11 @@ sub _export_plugin_functions {
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
         }
+#        if (my $before_action = $plugin->can('before_action')) {
+#            my $orig = \&action;
+#            *action = sub {
+#            };
+#        }
         for my $func (qw/process_env process_response process_content/) {
             my $plugin_func = $plugin->can($func);
             if ($plugin_func) {
