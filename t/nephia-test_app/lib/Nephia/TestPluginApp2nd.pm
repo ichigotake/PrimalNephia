@@ -6,7 +6,7 @@ use Nephia plugins => ['Moz' => {word => 'kieeeee'}];
 
 path '/' => sub {
     return {
-        message => 'foo',
+        message => '八王子なう',
         params  => param('foo'),
         appname => appname,
     };

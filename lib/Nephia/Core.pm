@@ -73,9 +73,9 @@ sub before_action {
 
 sub _build_action {
     my ($app_class, $caller, $code) = @_;
+    local $CONTEXT = Nephia::Context->new;
     my $action = sub {
         my ($env, $path_param) = @_;
-        local $CONTEXT = Nephia::Context->new;
         $CONTEXT->{app} = $app_class;
         my $req = _process_request($env, $path_param);
         no strict qw[ refs subs ];

@@ -20,6 +20,7 @@ sub appname {
 
 sub before_action {
     my ($env, $path_param, @action_chain) = @_;
+    context(fun_for => '豊崎愛生');
     my $req = Nephia::Request->new($env);
     if (my $moz = $req->param('moz')) {
         if ($moz eq 'shock-sheets') {
@@ -51,11 +52,13 @@ sub process_response {
 
 sub process_content {
     my $content = shift;
-    my $json = JSON->new->utf8;
-    my $moz = context('moznion');
+    my $json    = JSON->new->utf8;
+    my $moz     = context('moznion');
+    my $fun_for = context('fun_for');
     my $data = $json->decode($content);
-    $data->{message} =~ s/o/i/g;
-    $data->{message} .= $moz;
+    my $replace = 'で'.$moz.'カジュアル';
+    $data->{message} =~ s/なう/$replace/g;
+    $data->{message} = $fun_for.'さんと'.$data->{message};
     return $json->encode($data);
 }
 
