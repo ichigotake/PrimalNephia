@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use utf8;
 use JSON;
-use Nephia::Request;
 use Encode;
 
 our $WORD;
@@ -21,7 +20,7 @@ sub appname {
 sub before_action {
     my ($env, $path_param, @action_chain) = @_;
     context(fun_for => '豊崎愛生');
-    my $req = Nephia::Request->new($env);
+    my $req = context('req');
     if (my $moz = $req->param('moz')) {
         if ($moz eq 'shock-sheets') {
             return [
@@ -37,7 +36,7 @@ sub before_action {
 
 sub process_env {
     my $env = shift;
-    $env->{QUERY_STRING} = "foo=bar";
+    $env->{QUERY_STRING} ||= "foo=bar";
     context(moznion => '職');
     return $env;
 }

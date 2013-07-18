@@ -17,6 +17,8 @@ use Scalar::Util qw/blessed/;
 
 use Module::Load ();
 
+use Data::Dumper;
+
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $CONTEXT;
 
@@ -76,8 +78,15 @@ sub _build_action {
     local $CONTEXT = Nephia::Context->new;
     my $action = sub {
         my ($env, $path_param) = @_;
-        $CONTEXT->{app} = $app_class;
+        my $req = $CONTEXT->{req};
+        my $res = $code->( $req, $req->path_param );
+        return _process_response($res);
+    };
+    return sub { 
+        my ($env, $path_param) = @_;
         my $req = _process_request($env, $path_param);
+        $CONTEXT->{app} = $app_class;
+        $CONTEXT->{req} = $req;
         no strict qw[ refs subs ];
         no warnings qw[ redefine ];
         local *{$caller."::req"} = sub{ $req };
@@ -85,13 +94,8 @@ sub _build_action {
             my $key = shift;
             $key ? $req->param($key) : $req->parameters;
         };
-        local *{$caller."::path_param"} = sub (;$) { $req->path_param(shift) };
         local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
-        my $res = $code->( $req, $req->path_param );
-        return _process_response($res);
-    };
-    return sub { 
-        my ($env, $path_param) = @_;
+        local *{$caller."::path_param"} = sub (;$) { $path_param };
         my $res = before_action($env, $path_param, $action); 
         return $res;
     };
@@ -316,14 +320,13 @@ sub _export_plugin_functions {
 
     Module::Load::load($plugin);
     {
-        no strict 'refs';
+        no strict qw/refs subs/;
         no warnings qw/redefine prototype/;
         *{$plugin.'::context'} = sub { 
             my ($key, $val) = @_;
             $CONTEXT->{$key} = $val if defined $key && defined $val;
             return defined $key ? $CONTEXT->{$key} : $CONTEXT;
         };
-
         $plugin->import if $plugin->can('import');
         $plugin->load($pkg, $opt) if $plugin->can('load');
 
