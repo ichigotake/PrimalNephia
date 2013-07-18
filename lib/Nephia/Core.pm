@@ -57,17 +57,23 @@ sub _path {
         $path = join '/', @paths;
     }
 
+    my $action = _build_action($app_class, $caller, $code);
+
     $mapper->connect(
         $path,
-        { action => _build_action($app_class, $caller, $code) },
+        { action => $action } ,
         $methods ? { method => $methods } : undef,
     );
+}
 
+sub before_action {
+    my ($env, $path_param, $next_action) = @_;
+    $next_action->($env, $path_param);
 }
 
 sub _build_action {
     my ($app_class, $caller, $code) = @_;
-    sub {
+    my $action = sub {
         my ($env, $path_param) = @_;
         local $CONTEXT = Nephia::Context->new;
         $CONTEXT->{app} = $app_class;
@@ -83,6 +89,11 @@ sub _build_action {
         local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
         my $res = $code->( $req, $req->path_param );
         return _process_response($res);
+    };
+    return sub { 
+        my ($env, $path_param) = @_;
+        my $res = before_action($env, $path_param, $action); 
+        return $res;
     };
 }
 
@@ -319,11 +330,13 @@ sub _export_plugin_functions {
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
         }
-#        if (my $before_action = $plugin->can('before_action')) {
-#            my $orig = \&action;
-#            *action = sub {
-#            };
-#        }
+        if (my $plugin_action = $plugin->can('before_action')) {
+            my $orig = \&before_action;
+            *before_action = sub {
+                my ($env, $path_param, $action) = @_;
+                $plugin_action->($env, $path_param, $orig, $action);
+            };
+        }
         for my $func (qw/process_env process_response process_content/) {
             my $plugin_func = $plugin->can($func);
             if ($plugin_func) {

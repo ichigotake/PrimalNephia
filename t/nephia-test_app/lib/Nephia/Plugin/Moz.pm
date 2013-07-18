@@ -3,9 +3,10 @@ use strict;
 use warnings;
 use utf8;
 use JSON;
+use Nephia::Request;
+use Encode;
 
 our $WORD;
-
 our @EXPORT = qw/appname/;
 
 sub load {
@@ -15,6 +16,22 @@ sub load {
 
 sub appname {
     return context('app');
+}
+
+sub before_action {
+    my ($env, $path_param, @action_chain) = @_;
+    my $req = Nephia::Request->new($env);
+    if (my $moz = $req->param('moz')) {
+        if ($moz eq 'shock-sheets') {
+            return [
+                200, 
+                ['Content-Type' => 'text/plain; charset=UTF-8'], 
+                [Encode::encode_utf8('職質なう')]
+            ];
+        }
+    }
+    my $next = shift(@action_chain);
+    $next->($env, $path_param, @action_chain);
 }
 
 sub process_env {
