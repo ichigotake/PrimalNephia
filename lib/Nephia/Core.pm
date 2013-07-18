@@ -97,22 +97,18 @@ sub process_env {
     return $env;
 }
 
+sub _render_or_json {
+    my $raw_res = shift;
+    eval {$raw_res->{template}} ? render($raw_res) : json_res($raw_res);
+}
+
 sub _process_response {
     my $raw_res = shift;
-    my $res;
-    if ( ref $raw_res eq 'HASH' ) {
-        $res = Nephia::Response->new(@{
-            eval { $raw_res->{template} } ? 
-                render($raw_res) : 
-                json_res($raw_res)
-        });
-    }
-    elsif ( blessed $raw_res && $raw_res->isa('Plack::Response') ) {
-        $res = $raw_res;
-    }
-    else {
-        $res = Nephia::Response->new(@{$raw_res});
-    }
+    my $res = 
+        ref($raw_res) eq 'HASH' ? Nephia::Response->new( @{_render_or_json($raw_res)} ) :
+        blessed($raw_res) && $raw_res->isa('Plack::Response') ? $raw_res :
+        Nephia::Response->new(@{$raw_res})
+    ;
     if ($CONTEXT->{cookie}) {
         for my $key (keys %{$CONTEXT->{cookie}}) {
             $res->cookies->{$key} = $CONTEXT->{cookie}{$key};
