@@ -54,9 +54,9 @@ For example.
       context(sound => $plugin_option->{sound});  # set sound into context
   }
 
-  sub before_request {
-      my ($env, $path_param, @chain_of_actions) = @_;
-      my $req = Nephia::Request->new($env);
+  sub before_action {
+      my ($env, $path_param, @action_chain) = @_;
+      my $req = context('req');
       if (my $id = $req->param('id')) {
           return [403, [], ['You denied!'] ] if $id eq 'ytnobody';  # deny ytnobody :(
       }
