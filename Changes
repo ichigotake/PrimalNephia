@@ -1,6 +1,11 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+        - feature : add before_action hook for plugins
+        - refactor : suppress side-effect that destroys $env by Plack::Request
+        - refactor : split action build logic into _build_action
+        - bug fix : add Config::Micro as deps. "Keep genleness for user" :)
+        - refactor : use trenary operator in _process_response
 
 0.35 2013-07-17T11:53:56Z
         - feature : add application class name into context with keyname "app"
