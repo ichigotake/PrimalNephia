@@ -38,11 +38,8 @@ sub _path {
     my $app_class = caller(1);
     my ($app_map, $app_code, $mapper) = Nephia::GlobalVars->get(qw/app_map app_code mapper/);
 
-    if (
-        $target_class
-        && exists $app_map->{$target_class}
-        && $app_map->{$target_class}{path}
-    ) {
+    my $sub_app_map = $target_class ? $app_map->{$target_class} : undef;
+    if ($sub_app_map && exists $sub_app_map->{path}) {
         # setup for submapping one more
         $app_code->{$target_class} ||= {};
         if (!exists $app_code->{$target_class}{$path}) {
@@ -53,7 +50,7 @@ sub _path {
         }
 
         $path =~ s!^/!!g;
-        my @paths = ($app_map->{$target_class}->{path});
+        my @paths = ($app_map->{$target_class}{path});
         push @paths, $path if length($path) > 0;
         $path = join '/', @paths;
     }
