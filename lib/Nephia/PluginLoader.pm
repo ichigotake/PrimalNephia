@@ -40,24 +40,31 @@ sub _export_plugin_functions {
         for my $func ( @{"${plugin}::EXPORT"} ){
             *{"$pkg\::$func"} = $plugin->can($func);
         }
-        if (my $plugin_action = $plugin->can('before_action')) {
-            my $orig = Nephia::Core->can('before_action');
-            *Nephia::Core::before_action = sub {
-                my ($env, $path_param, $action) = @_;
-                $plugin_action->($env, $path_param, $orig, $action);
-            };
-        }
-        for my $func (qw/process_env process_response process_content/) {
-            my $plugin_func = $plugin->can($func);
-            if ($plugin_func) {
-                my $orig = Nephia::Core->can($func);
-                my $sub = sub {
-                    my $in = shift;
-                    my $out = $plugin_func->($orig->($in));
-                    return $out;
-                }; 
-                *{'Nephia::Core::'.$func} = $sub;
-            }
+        _load_hook_point($plugin);
+    }
+}
+
+sub _load_hook_point {
+    my ($plugin) = @_;
+    no strict qw/refs/;
+    no warnings qw/redefine/;
+    if (my $plugin_action = $plugin->can('before_action')) {
+        my $orig = Nephia::Core->can('before_action');
+        *Nephia::Core::before_action = sub {
+            my ($env, $path_param, $action) = @_;
+            $plugin_action->($env, $path_param, $orig, $action);
+        };
+    }
+    for my $func (qw/process_env process_response process_content/) {
+        my $plugin_func = $plugin->can($func);
+        if ($plugin_func) {
+            my $orig = Nephia::Core->can($func);
+            my $sub = sub {
+                my $in = shift;
+                my $out = $plugin_func->($orig->($in));
+                return $out;
+            }; 
+            *{'Nephia::Core::'.$func} = $sub;
         }
     }
 }
