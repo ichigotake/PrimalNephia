@@ -42,19 +42,13 @@ sub _path {
     if ($sub_app_map && exists $sub_app_map->{path}) {
         # setup for submapping one more
         $app_code->{$target_class}        ||= {};
-        $app_code->{$target_class}{$path} ||= {
-            code    => $code,
-            methods => $methods,
-        };
+        $app_code->{$target_class}{$path} ||= {code => $code, methods => $methods};
 
         $path =~ s!^/!!;
-        my @paths = ( $app_map->{$target_class}{path} );
-        push @paths, $path if $path;
-        $path = join '/', @paths;
+        $path = join('/', $path ? ( $sub_app_map->{path}, $path ) : ( $sub_app_map->{path} ));
     }
 
     my $action = _build_action($app_class, $caller, $code);
-
     $mapper->connect($path, {action => $action}, $methods ? {method => $methods} : undef);
 }
 
