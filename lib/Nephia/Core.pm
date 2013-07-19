@@ -7,6 +7,7 @@ use Nephia::Request;
 use Nephia::Response;
 use Nephia::GlobalVars;
 use Nephia::Context;
+use Nephia::PluginLoader;
 use Plack::Builder;
 use Router::Simple;
 use Nephia::View;
@@ -251,7 +252,8 @@ sub app {
     return sub {
         my $env = shift;
         if ( my $p = $mapper->match($env) ) {
-            $p->{action}->($env, $p);
+            my $action = delete $p->{action};
+            $action->($env, $p);
         }
         else {
             [404, [], ['Not Found']];
@@ -295,61 +297,7 @@ sub config (@) {
 };
 
 sub nephia_plugins (@) {
-    my $caller = caller();
-    my @plugins = @_;
-
-    while (@plugins) {
-        my $plugin = shift @plugins;
-        $plugin = _normalize_plugin_name($plugin);
-
-        my $opt = $plugins[0] && ref $plugins[0] ? shift @plugins : undef;
-        _export_plugin_functions($plugin, $caller, $opt);
-    }
-
-};
-
-sub _normalize_plugin_name {
-    local $_ = shift;
-    /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_";
-}
-
-sub _export_plugin_functions {
-    my ($plugin, $pkg, $opt) = @_;
-
-    Module::Load::load($plugin);
-    {
-        no strict qw/refs subs/;
-        no warnings qw/redefine prototype/;
-        *{$plugin.'::context'} = sub { 
-            my ($key, $val) = @_;
-            $CONTEXT->{$key} = $val if defined $key && defined $val;
-            return defined $key ? $CONTEXT->{$key} : $CONTEXT;
-        };
-        $plugin->import if $plugin->can('import');
-        $plugin->load($pkg, $opt) if $plugin->can('load');
-
-        for my $func ( @{"${plugin}::EXPORT"} ){
-            *{"$pkg\::$func"} = $plugin->can($func);
-        }
-        if (my $plugin_action = $plugin->can('before_action')) {
-            my $orig = \&before_action;
-            *before_action = sub {
-                my ($env, $path_param, $action) = @_;
-                $plugin_action->($env, $path_param, $orig, $action);
-            };
-        }
-        for my $func (qw/process_env process_response process_content/) {
-            my $plugin_func = $plugin->can($func);
-            if ($plugin_func) {
-                my $orig = \&{$func};
-                *$func = sub {
-                    my $in = shift;
-                    my $out = $plugin_func->($orig->($in));
-                    return $out;
-                }; 
-            }
-        }
-    }
+    goto do { Nephia::PluginLoader->can('load') };
 }
 
 sub base_dir {
