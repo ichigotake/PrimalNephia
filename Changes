@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+
+0.37 2013-07-19T15:16:27Z
         - bug fix : fix documentation (could not use context() in load() of plugin)
         - feature : add plugin_config() DSL for development plugins
 
