@@ -34,34 +34,28 @@ Nephia::GlobalVars->set(
 
 sub _path {
     my ( $path, $code, $methods, $target_class ) = @_;
-    my $caller = caller();
+    my $caller    = caller();
     my $app_class = caller(1);
     my ($app_map, $app_code, $mapper) = Nephia::GlobalVars->get(qw/app_map app_code mapper/);
 
     my $sub_app_map = $target_class ? $app_map->{$target_class} : undef;
     if ($sub_app_map && exists $sub_app_map->{path}) {
         # setup for submapping one more
-        $app_code->{$target_class} ||= {};
-        if (!exists $app_code->{$target_class}{$path}) {
-            $app_code->{$target_class}{$path} = {
-                code => $code,
-                methods => $methods,
-            };
-        }
+        $app_code->{$target_class}        ||= {};
+        $app_code->{$target_class}{$path} ||= {
+            code    => $code,
+            methods => $methods,
+        };
 
         $path =~ s!^/!!;
-        my @paths = ($app_map->{$target_class}{path});
+        my @paths = ( $app_map->{$target_class}{path} );
         push @paths, $path if length($path) > 0;
         $path = join '/', @paths;
     }
 
     my $action = _build_action($app_class, $caller, $code);
 
-    $mapper->connect(
-        $path,
-        { action => $action } ,
-        $methods ? { method => $methods } : undef,
-    );
+    $mapper->connect($path, {action => $action}, $methods ? {method => $methods} : undef);
 }
 
 sub before_action {
