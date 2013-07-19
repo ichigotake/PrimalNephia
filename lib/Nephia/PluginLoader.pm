@@ -26,11 +26,7 @@ sub _export_plugin_functions {
     {
         no strict qw/refs subs/;
         no warnings qw/redefine prototype/;
-        *{$plugin.'::context'} = sub { 
-            my ($key, $val) = @_;
-            $Nephia::Core::CONTEXT->{$key} = $val if defined $key && defined $val;
-            return defined $key ? $Nephia::Core::CONTEXT->{$key} : $Nephia::Core::CONTEXT;
-        };
+        *{$plugin.'::context'} = *Nephia::Core::context;
         $plugin->import if $plugin->can('import');
         $plugin->load($pkg, $opt) if $plugin->can('load');
 

@@ -328,4 +328,10 @@ sub cookie ($) {
     $CONTEXT->{cookie}{$key};
 }
 
+sub context { 
+    my ($key, $val) = @_;
+    $Nephia::Core::CONTEXT->{$key} = $val if defined $key && defined $val;
+    return defined $key ? $Nephia::Core::CONTEXT->{$key} : $Nephia::Core::CONTEXT;
+};
+
 1;
