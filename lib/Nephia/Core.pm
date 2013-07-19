@@ -59,7 +59,6 @@ sub before_action {
 
 sub _build_action {
     my ($app_class, $caller, $code) = @_;
-    local $CONTEXT = Nephia::Context->new;
     my $action = sub {
         my ($env, $path_param) = @_;
         my $req = $CONTEXT->{req};
@@ -68,18 +67,16 @@ sub _build_action {
     };
     return sub { 
         my ($env, $path_param) = @_;
-        my $req = _process_request($env, $path_param);
-        $CONTEXT->{app} = $app_class;
-        $CONTEXT->{req} = $req;
+        local $CONTEXT = Nephia::Context->new;
+        $CONTEXT->set(app => $app_class, req =>_process_request($env, $path_param));
         no strict qw[ refs subs ];
         no warnings qw[ redefine ];
-        local *{$caller."::req"} = sub{ $req };
-        local *{$caller."::param"} = sub (;$) {
-            my $key = shift;
-            $key ? $req->param($key) : $req->parameters;
+        local *{$caller."::req"}        = sub      { context('req') };
+        local *{$caller."::nip"}        = sub (;$) { context('req')->nip(shift) };
+        local *{$caller."::path_param"} = sub (;$) { context('req')->path_param(shift) };
+        local *{$caller."::param"}      = sub (;$) {
+            $_[0] ? context('req')->param($_[0]) : context('req')->parameters;
         };
-        local *{$caller."::nip"} = sub (;$) { $req->nip(shift) };
-        local *{$caller."::path_param"} = sub (;$) { $path_param };
         my $res = before_action($env, $path_param, $action); 
         return $res;
     };
@@ -90,7 +87,7 @@ sub _process_request {
     my $env = process_env($raw_env);
     my $req = Nephia::Request->new($env);
     $req->{path_param} = $path_param;
-    $CONTEXT->{cookie} = $req->cookies;
+    $CONTEXT->set(cookie => $req->cookies);
     return $req;
 }
 
