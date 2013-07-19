@@ -24,7 +24,7 @@ sub _export_plugin_functions {
 
     Module::Load::load($plugin);
     {
-        no strict qw/refs subs/;
+        no strict   qw/refs subs/;
         no warnings qw/redefine prototype/;
 
         *{$plugin.'::context'} = *Nephia::Core::context;
@@ -39,7 +39,7 @@ sub _export_plugin_functions {
 sub _load_hook_point {
     my $plugin = shift;
     {
-        no strict qw/refs/;
+        no strict   qw/refs/;
         no warnings qw/redefine/;
         if (my $plugin_action = $plugin->can('before_action')) {
             my $orig = Nephia::Core->can('before_action');
