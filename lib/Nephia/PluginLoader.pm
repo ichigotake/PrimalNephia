@@ -8,13 +8,10 @@ sub load {
     my @plugins = @_;
 
     while (@plugins) {
-        my $plugin = shift @plugins;
-        $plugin = _normalize_plugin_name($plugin);
-
-        my $opt = $plugins[0] && ref $plugins[0] ? shift @plugins : undef;
+        my $plugin = _normalize_plugin_name(shift(@plugins));
+        my $opt    = $plugins[0] && ref $plugins[0] ? shift @plugins : undef;
         _export_plugin_functions($plugin, $caller, $opt);
     }
-
 };
 
 sub _normalize_plugin_name {
