@@ -1,6 +1,8 @@
 Revision history for Perl extension Nephia
 
 {{$NEXT}}
+
+0.36 2013-07-19T14:14:44Z
         - refactor : modify some logic to more thin one
         - refactor : split plugin loader logic into Nephia::PluginLoader
         - refactor : add request object into context
