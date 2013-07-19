@@ -49,7 +49,7 @@ sub _path {
 
         $path =~ s!^/!!;
         my @paths = ( $app_map->{$target_class}{path} );
-        push @paths, $path if length($path) > 0;
+        push @paths, $path if $path;
         $path = join '/', @paths;
     }
 
