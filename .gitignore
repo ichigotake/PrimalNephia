@@ -8,7 +8,7 @@ Makefile.old
 nytprof.out
 MANIFEST.bak
 *.sw[po]
-/Nephia-*
+/PrimalNephia-*
 /.build
 /_build_params
 /Build
