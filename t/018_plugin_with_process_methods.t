@@ -8,13 +8,13 @@ use utf8;
 use Encode;
 
 use lib qw( ./t/nephia-test_app/lib );
-use Nephia::TestPluginApp2nd;
+use PrimalNephia::TestPluginApp2nd;
 use t::Util;
 
 binmode STDOUT,'utf8';
 
 test_psgi
-    app => Nephia::TestPluginApp2nd->run( test_config ),
+    app => PrimalNephia::TestPluginApp2nd->run( test_config ),
     client => sub {
         my $cb = shift;
         subtest "normal" => sub {
@@ -24,7 +24,7 @@ test_psgi
             my $json = JSON->new->utf8->decode($res->content);
             is $json->{params}, 'bar', 'process_env';
             is $json->{message}, '豊崎愛生さんと八王子で職質カジュアル', 'process_content';
-            is $json->{appname}, 'Nephia::TestPluginApp2nd', 'context("app") is Nephia::TestPluginApp2nd';
+            is $json->{appname}, 'PrimalNephia::TestPluginApp2nd', 'context("app") is PrimalNephia::TestPluginApp2nd';
         };
 
         subtest "before_action" => sub {

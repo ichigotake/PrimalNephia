@@ -7,7 +7,7 @@ use JSON;
 my $app;
 
 {
-    use Nephia;
+    use PrimalNephia;
     path '/set' => sub {
         set_cookie foo => 'bar';
         +{ status => 'ok' };

@@ -1,4 +1,4 @@
-package Nephia::View;
+package PrimalNephia::View;
 
 use strict;
 use warnings;

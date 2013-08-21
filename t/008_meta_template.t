@@ -2,12 +2,12 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use Nephia::MetaTemplate;
+use PrimalNephia::MetaTemplate;
 
 my $data = join('', (<DATA>));
 
 subtest default => sub {
-    my $meta = Nephia::MetaTemplate->new;
+    my $meta = PrimalNephia::MetaTemplate->new;
     my $expect = <<EOF;
 ? my \$c = shift;
 <html>
@@ -24,7 +24,7 @@ EOF
 };
 
 subtest tterse => sub {
-    my $meta = Nephia::MetaTemplate->new(
+    my $meta = PrimalNephia::MetaTemplate->new(
         tag           => '[% ... %]',
         arrow         => '.',
         argument      => '...',

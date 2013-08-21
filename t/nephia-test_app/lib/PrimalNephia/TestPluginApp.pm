@@ -1,8 +1,8 @@
-package Nephia::TestPluginApp;
+package PrimalNephia::TestPluginApp;
 use strict;
 use warnings;
 use utf8;
-use Nephia plugins => [qw/Bark/, 'Macopy' => {wei => 'うぇーい'}];
+use PrimalNephia plugins => [qw/Bark/, 'Macopy' => {wei => 'うぇーい'}];
 
 our $VERSION = 0.37;
 
@@ -19,7 +19,7 @@ __END__
 
 =head1 NAME
 
-Nephia-TestApp - Test Web Application for Nephia
+PrimalNephia-TestApp - Test Web Application for PrimalNephia
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ Nephia-TestApp - Test Web Application for Nephia
 
 =head1 DESCRIPTION
 
-Nephia::TestApp is web application based Nephia.
+PrimalNephia::TestApp is web application based PrimalNephia.
 
 =head1 AUTHOR
 
@@ -35,7 +35,7 @@ ytnobody
 
 =head1 SEE ALSO
 
-Nephia
+PrimalNephia
 
 =head1 LICENSE
 

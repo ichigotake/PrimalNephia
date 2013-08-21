@@ -10,7 +10,7 @@ if ($^O eq 'MSWin32') {
     plan skip_all => 'Git flavor test is skipped in Windows';
 }
 
-use Nephia::Setup;
+use PrimalNephia::Setup;
 use Capture::Tiny 'capture';
 use File::Temp 'tempdir';
 use Plack::Test;
@@ -24,12 +24,12 @@ chdir $dir;
 
 my $guard = guard { chdir $pwd };
 
-my $setup = Nephia::Setup->new(
+my $setup = PrimalNephia::Setup->new(
     appname => 'Verdure::Memory',
     flavor  => ['Git'],
 );
 
-isa_ok $setup, 'Nephia::Setup::Base';
+isa_ok $setup, 'PrimalNephia::Setup::Base';
 can_ok $setup, 'create';
 
 subtest create => sub {

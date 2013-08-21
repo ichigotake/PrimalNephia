@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 use Test::More;
-use Nephia::PluginLoader;
+use PrimalNephia::PluginLoader;
 
-is Nephia::PluginLoader::_normalize_plugin_name('Hoge'), 'Nephia::Plugin::Hoge', '_normalize_plugin_name Hoge';
-is Nephia::PluginLoader::_normalize_plugin_name('+Piyo::Piyo'), 'Piyo::Piyo', '_normalize_plugin_name +Piyo::Piyo';
+is PrimalNephia::PluginLoader::_normalize_plugin_name('Hoge'), 'PrimalNephia::Plugin::Hoge', '_normalize_plugin_name Hoge';
+is PrimalNephia::PluginLoader::_normalize_plugin_name('+Piyo::Piyo'), 'Piyo::Piyo', '_normalize_plugin_name +Piyo::Piyo';
 
 done_testing;

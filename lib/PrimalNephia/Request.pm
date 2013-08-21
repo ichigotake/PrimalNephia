@@ -1,4 +1,4 @@
-package Nephia::Request;
+package PrimalNephia::Request;
 use strict;
 use warnings;
 

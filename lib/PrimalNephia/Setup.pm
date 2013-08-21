@@ -1,7 +1,7 @@
-package Nephia::Setup;
+package PrimalNephia::Setup;
 use strict;
 use warnings;
-use Nephia::Setup::Base;
+use PrimalNephia::Setup::Base;
 
 use Module::Load ();
 
@@ -10,13 +10,13 @@ sub new {
     $opts{flavor} ||= [];
 
     my $flavors = delete $opts{flavor};
-    my $setup = Nephia::Setup::Base->new( %opts );
+    my $setup = PrimalNephia::Setup::Base->new( %opts );
 
     my @template_data = ();
     {
         no strict 'refs';
 
-        my $dh = *{'Nephia::Setup::Base::DATA'}{IO};
+        my $dh = *{'PrimalNephia::Setup::Base::DATA'}{IO};
         push @template_data, (<$dh>);
 
         for my $flavor (sort {($b =~ /^View::/) <=> ($a =~ /^View::/)} @$flavors) {
@@ -43,8 +43,8 @@ sub load_flavor {
     Module::Load::load($flavor_class);
 
     my $flavor_rtn = $flavor_class->can('on_load') ? $flavor_class->on_load($setup) : undef;
-    if (ref($flavor_rtn) =~ /^Nephia::Setup::/) {
-        $setup = $flavor_rtn if $flavor_rtn->isa('Nephia::Setup::Base');
+    if (ref($flavor_rtn) =~ /^PrimalNephia::Setup::/) {
+        $setup = $flavor_rtn if $flavor_rtn->isa('PrimalNephia::Setup::Base');
     }
 
     $class->_export_flavor_functions($flavor_class);
@@ -64,13 +64,13 @@ sub _export_flavor_functions {
     {
         no strict 'refs';
         my @funcs = grep { $_ =~ /^[a-z]/ && $_ !~ /^(import|on_load)$/ } keys %{$flavor_class.'::'};
-        *{'Nephia::Setup::Base::'.$_} = *{$flavor_class.'::'.$_} for @funcs;
+        *{'PrimalNephia::Setup::Base::'.$_} = *{$flavor_class.'::'.$_} for @funcs;
     }
 }
 
 sub get_version {
-    require Nephia;
-    return $Nephia::VERSION;
+    require PrimalNephia;
+    return $PrimalNephia::VERSION;
 }
 
 1;

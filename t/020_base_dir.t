@@ -22,7 +22,7 @@ use constant TEST_SCRIPT   => 'test_run.pl';
 
 my $guard        = pushd(tempdir(CLEANUP => 1));
 my $current_dir  = Cwd::getcwd();
-my $nephia_setup = File::Spec->catfile($FindBin::Bin, '..', 'bin', 'nephia-setup');
+my $nephia_setup = File::Spec->catfile($FindBin::Bin, '..', 'bin', 'primalnephia-setup');
 
 system $^X, '-I' . LIB, $nephia_setup, NEPHIA_APP;
 chdir NEPHIA_APP;
@@ -70,7 +70,7 @@ EOS
         print $fh <<'EOS';
 use strict;
 use warnings;
-use Nephia;
+use PrimalNephia;
 EOS
         print $fh 'sub ' . BASE_DIR_FUNC . " { print base_dir; }\n";
         print $fh '1;'
@@ -82,7 +82,7 @@ EOS
 
 subtest 'psgi' => sub {
     my $app = eval {
-        use Nephia;
+        use PrimalNephia;
         path '/' => sub { res {(200, [], [base_dir] )} };
         __PACKAGE__->run;
     };

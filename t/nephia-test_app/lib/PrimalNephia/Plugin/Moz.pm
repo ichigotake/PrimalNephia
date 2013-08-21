@@ -1,4 +1,4 @@
-package Nephia::Plugin::Moz;
+package PrimalNephia::Plugin::Moz;
 use strict;
 use warnings;
 use utf8;

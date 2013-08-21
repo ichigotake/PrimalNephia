@@ -1,11 +1,11 @@
-package Nephia::Plugin::Bark;
+package PrimalNephia::Plugin::Bark;
 use strict;
 use warnings;
 
 our @EXPORT = qw/bark barkbark/;
 
 sub import {
-    $Nephia::BARK = 'FOO';
+    $PrimalNephia::BARK = 'FOO';
 }
 
 sub bark () {

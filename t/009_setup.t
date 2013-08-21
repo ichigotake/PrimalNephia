@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Nephia::Setup;
+use PrimalNephia::Setup;
 use Capture::Tiny 'capture';
 use File::Temp 'tempdir';
 use Plack::Test;
@@ -15,11 +15,11 @@ chdir $dir;
 
 my $guard = guard { chdir $pwd };
 
-my $setup = Nephia::Setup->new(
+my $setup = PrimalNephia::Setup->new(
     appname => 'Verdure::Memory',
 );
 
-isa_ok $setup, 'Nephia::Setup::Base';
+isa_ok $setup, 'PrimalNephia::Setup::Base';
 can_ok $setup, 'create';
 
 subtest create => sub {
@@ -36,11 +36,11 @@ subtest create => sub {
 };
 
 subtest get_version => sub {
-    my $version = Nephia::Setup->get_version;
+    my $version = PrimalNephia::Setup->get_version;
     {
-        use Nephia ();
-        is $version, $Nephia::VERSION, 'get version';
-        no Nephia;
+        use PrimalNephia ();
+        is $version, $PrimalNephia::VERSION, 'get version';
+        no PrimalNephia;
     }
 };
 

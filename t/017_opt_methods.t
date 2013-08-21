@@ -8,11 +8,11 @@ use utf8;
 use Encode;
 
 use lib qw( ./t/nephia-test_app/lib );
-use Nephia::TestApp;
+use PrimalNephia::TestApp;
 use t::Util;
 
 test_psgi 
-    app => Nephia::TestApp->run( test_config ),
+    app => PrimalNephia::TestApp->run( test_config ),
     client => sub {
         my $cb = shift;
 

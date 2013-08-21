@@ -23,8 +23,8 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name            => 'Nephia',
-    module_name     => 'Nephia',
+    name            => 'PrimalNephia',
+    module_name     => 'PrimalNephia',
     allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],

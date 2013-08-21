@@ -1,9 +1,9 @@
-package Nephia::ParentApp;
+package PrimalNephia::ParentApp;
 use strict;
 use warnings;
 use utf8;
 
-use Nephia;
+use PrimalNephia;
 
 path '/' => sub {
     res {
@@ -11,9 +11,9 @@ path '/' => sub {
     };
 };
 
-path '/subapp' => '+Nephia::SubApp';
+path '/subapp' => '+PrimalNephia::SubApp';
 path '/childapp' => 'ChildApp';
-path '/subapp2' => '+Nephia::SubApp';
+path '/subapp2' => '+PrimalNephia::SubApp';
 
 1;
 

@@ -1,4 +1,4 @@
-package Nephia::Setup::Git;
+package PrimalNephia::Setup::Git;
 use strict;
 use warnings;
 use File::pushd;

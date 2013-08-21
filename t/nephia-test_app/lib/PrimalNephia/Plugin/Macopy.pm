@@ -1,4 +1,4 @@
-package Nephia::Plugin::Macopy;
+package PrimalNephia::Plugin::Macopy;
 use strict;
 use warnings;
 use Encode;

@@ -7,7 +7,7 @@ use HTTP::Request::Common;
 use JSON;
 
 use lib qw( ./t/nephia-test_app/lib );
-use Nephia::TestApp;
+use PrimalNephia::TestApp;
 
 my $app = Plack::Util::load_psgi('t/nephia-test_app/app.psgi');
 

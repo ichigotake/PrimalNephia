@@ -8,13 +8,13 @@ use utf8;
 use Encode;
 
 use lib qw( ./t/nephia-test_app/lib );
-use Nephia::TestApp;
+use PrimalNephia::TestApp;
 use t::Util;
 
-is $Nephia::BARK, 'FOO', 'import check';
+is $PrimalNephia::BARK, 'FOO', 'import check';
 
 test_psgi 
-    app => Nephia::TestApp->run( test_config ),
+    app => PrimalNephia::TestApp->run( test_config ),
     client => sub {
         my $cb = shift;
         subtest "bark" => sub {

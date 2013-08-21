@@ -1,16 +1,16 @@
-package Nephia::Core;
+package PrimalNephia::Core;
 use strict;
 use warnings;
 
 use parent 'Exporter';
-use Nephia::Request;
-use Nephia::Response;
-use Nephia::GlobalVars;
-use Nephia::Context;
-use Nephia::PluginLoader;
+use PrimalNephia::Request;
+use PrimalNephia::Response;
+use PrimalNephia::GlobalVars;
+use PrimalNephia::Context;
+use PrimalNephia::PluginLoader;
 use Plack::Builder;
 use Router::Simple;
-use Nephia::View;
+use PrimalNephia::View;
 use JSON ();
 use Encode;
 use Carp qw/croak/;
@@ -21,7 +21,7 @@ use Module::Load ();
 our @EXPORT = qw[ get post put del path req res param path_param nip run config app nephia_plugins base_dir cookie set_cookie ];
 our $CONTEXT;
 
-Nephia::GlobalVars->set(
+PrimalNephia::GlobalVars->set(
     mapper   => Router::Simple->new,
     view     => undef,
     config   => {},
@@ -36,7 +36,7 @@ sub _path {
     my ( $path, $code, $methods, $target_class ) = @_;
     my $caller    = caller();
     my $app_class = caller(1);
-    my ($app_map, $app_code, $mapper) = Nephia::GlobalVars->get(qw/app_map app_code mapper/);
+    my ($app_map, $app_code, $mapper) = PrimalNephia::GlobalVars->get(qw/app_map app_code mapper/);
 
     my $sub_app_map = $target_class ? $app_map->{$target_class} : undef;
     if ($sub_app_map && exists $sub_app_map->{path}) {
@@ -67,7 +67,7 @@ sub _build_action {
     };
     return sub { 
         my ($env, $path_param) = @_;
-        local $CONTEXT = Nephia::Context->new;
+        local $CONTEXT = PrimalNephia::Context->new;
         $CONTEXT->set(app => $app_class, req =>_process_request($env, $path_param));
         no strict qw[ refs subs ];
         no warnings qw[ redefine ];
@@ -85,7 +85,7 @@ sub _build_action {
 sub _process_request {
     my ($raw_env, $path_param) = @_;
     my $env = process_env($raw_env);
-    my $req = Nephia::Request->new($env);
+    my $req = PrimalNephia::Request->new($env);
     $req->{path_param} = $path_param;
     $CONTEXT->set(cookie => $req->cookies);
     return $req;
@@ -104,9 +104,9 @@ sub _render_or_json {
 sub _process_response {
     my $raw_res = shift;
     my $res = 
-        ref($raw_res) eq 'HASH' ? Nephia::Response->new( @{_render_or_json($raw_res)} ) :
+        ref($raw_res) eq 'HASH' ? PrimalNephia::Response->new( @{_render_or_json($raw_res)} ) :
         blessed($raw_res) && $raw_res->isa('Plack::Response') ? $raw_res :
-        Nephia::Response->new(@{$raw_res})
+        PrimalNephia::Response->new(@{$raw_res})
     ;
     if ($CONTEXT->{cookie}) {
         for my $key (keys %{$CONTEXT->{cookie}}) {
@@ -136,7 +136,7 @@ sub process_content {
 sub _submap {
     my ( $path, $package, $base_class ) = @_;
 
-    my ($app_map, $app_code) = Nephia::GlobalVars->get(qw/app_map app_code/);
+    my ($app_map, $app_code) = PrimalNephia::GlobalVars->get(qw/app_map app_code/);
 
     if (!($package =~ s/^\+//g)) {
         $package = join '::', $base_class, $package;
@@ -186,7 +186,7 @@ sub path ($@) {
 
 sub res (&) {
     my $code = shift;
-    my $res = Nephia::Response->new(200);
+    my $res = PrimalNephia::Response->new(200);
     $res->content_type('text/html');
     {
         no strict qw[ refs subs ];
@@ -217,9 +217,9 @@ sub run {
     my $class = shift;
     my $base_dir = base_dir($class);
     my $config = scalar @_ > 1 ? +{ @_ } : $_[0];
-    my $view = Nephia::View->new(($config->{view} ? %{$config->{view}} : ()), template_path => File::Spec->catdir($base_dir, 'view'));
+    my $view = PrimalNephia::View->new(($config->{view} ? %{$config->{view}} : ()), template_path => File::Spec->catdir($base_dir, 'view'));
 
-    Nephia::GlobalVars->set(config => $config, view => $view);
+    PrimalNephia::GlobalVars->set(config => $config, view => $view);
 
     my $root = File::Spec->catfile($base_dir, 'root');
     return builder {
@@ -230,7 +230,7 @@ sub run {
 
 sub app {
     my $class = shift;
-    my $mapper = Nephia::GlobalVars->get('mapper');
+    my $mapper = PrimalNephia::GlobalVars->get('mapper');
     return sub {
         my $env = shift;
         if ( my $p = $mapper->match($env) ) {
@@ -245,7 +245,7 @@ sub app {
 
 sub json_res {
     my $res  = shift;
-    my $json = Nephia::GlobalVars->get('json');
+    my $json = PrimalNephia::GlobalVars->get('json');
     my $body = $json->encode( $res );
     return [ 200,
         [
@@ -260,8 +260,8 @@ sub json_res {
 
 sub render {
     my $res     = shift;
-    my $charset = delete $res->{charset} || Nephia::GlobalVars->get('charset');
-    my $view    = Nephia::GlobalVars->get('view');
+    my $charset = delete $res->{charset} || PrimalNephia::GlobalVars->get('charset');
+    my $view    = PrimalNephia::GlobalVars->get('view');
     my $body    = $view->render( $res->{template}, $res );
     return [ 200,
         [ 'Content-type' => "text/html; charset=$charset" ],
@@ -270,16 +270,16 @@ sub render {
 }
 
 sub config (@) {
-    Nephia::GlobalVars->set(config => 
+    PrimalNephia::GlobalVars->set(config => 
         scalar @_ > 1 ? { @_ } :
         ref $_[0] eq 'HASH' ? $_[0] :
         do( $_[0] )
     ) if scalar(@_) > 0;
-    return Nephia::GlobalVars->get('config');
+    return PrimalNephia::GlobalVars->get('config');
 };
 
 sub nephia_plugins (@) {
-    goto do { Nephia::PluginLoader->can('load') };
+    goto do { PrimalNephia::PluginLoader->can('load') };
 }
 
 sub base_dir {
@@ -296,7 +296,7 @@ sub base_dir {
     }
 
     no warnings 'redefine';
-    *Nephia::Core::base_dir = sub {
+    *PrimalNephia::Core::base_dir = sub {
         return $base_dir;
     };
 
@@ -315,8 +315,8 @@ sub cookie ($) {
 
 sub context { 
     my ($key, $val) = @_;
-    $Nephia::Core::CONTEXT->{$key} = $val if defined $key && defined $val;
-    return defined $key ? $Nephia::Core::CONTEXT->{$key} : $Nephia::Core::CONTEXT;
+    $PrimalNephia::Core::CONTEXT->{$key} = $val if defined $key && defined $val;
+    return defined $key ? $PrimalNephia::Core::CONTEXT->{$key} : $PrimalNephia::Core::CONTEXT;
 };
 
 1;

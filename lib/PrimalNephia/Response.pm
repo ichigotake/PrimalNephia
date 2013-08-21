@@ -1,4 +1,4 @@
-package Nephia::Response;
+package PrimalNephia::Response;
 use strict;
 use warnings;
 use utf8;

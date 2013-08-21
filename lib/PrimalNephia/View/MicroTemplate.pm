@@ -1,4 +1,4 @@
-package Nephia::View::MicroTemplate;
+package PrimalNephia::View::MicroTemplate;
 use strict;
 use warnings;
 use Text::MicroTemplate::File;

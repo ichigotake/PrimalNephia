@@ -49,7 +49,7 @@ Revision history for Perl extension Nephia
         - refactor : Nephia::Core inherits Exporter for export_to_level [songmu]
         - refactor : add test for Nephia::Core [songmu / ytnobody]
         - refactor : add template_path into arguments of Nephia::View when instantiate [ytnobody]
-        - feature : --plugin option enabled in nephia-setup [papix]
+        - feature : --plugin option enabled in primalnephia-setup [papix]
 
 
 0.30 2013-07-09T02:27:49Z
@@ -86,14 +86,14 @@ Revision history for Perl extension Nephia
         - feature : add DSL Modifier
 
 0.21 2013-06-28T05:46:17Z
-        - feature : support ".nephia-setup" file in nephia-setup command
+        - feature : support ".primalnephia-setup" file in primalnephia-setup command
         - bug fix : fix base_dir test with psgi
 
 0.20 2013-06-27T13:06:30Z
         - bug fix : sort flavor order by "view or not" rule
 
 0.19 2013-06-27T07:13:20Z
-        - feature : allow to use multiple flavor in nephia-setup
+        - feature : allow to use multiple flavor in primalnephia-setup
 
 0.18 2013-06-26T16:07:12Z
         - bug fix : Nephia::MetaTemplate tag matching rule was not good :(
@@ -118,7 +118,7 @@ Revision history for Perl extension Nephia
         - expand number of testfile
         - stop using 'Plack::Middleware::ContentLength' internally
         - implement get_version() feature into Setup.pm
-        - show Nephia version to 'nephia-setup --version'
+        - show Nephia version to 'primalnephia-setup --version'
 
 0.12 2013-06-14T11:11:42Z
         - import() will execute when plugin is loaded

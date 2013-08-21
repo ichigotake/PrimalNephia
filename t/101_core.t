@@ -3,8 +3,8 @@ use warnings;
 use utf8;
 use Test::More;
 
-use Nephia::Core;
-pass 'Nephia::Core loaded';
+use PrimalNephia::Core;
+pass 'PrimalNephia::Core loaded';
 
 can_ok __PACKAGE__, qw/
    get post put del path 

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8;
-use Nephia::Request;
+use PrimalNephia::Request;
 use Encode;
 use Test::More;
 
@@ -10,7 +10,7 @@ my $host  = 'example.com';
 my $path  = '/hoge/fuga';
 my $path_param = +{id => 'fuga'};
 
-my $req = Nephia::Request->new({
+my $req = PrimalNephia::Request->new({
     QUERY_STRING   => $query,
     REQUEST_METHOD => 'GET',
     HTTP_HOST      => $host,
@@ -19,7 +19,7 @@ my $req = Nephia::Request->new({
 $req->{path_param} = $path_param;
 
 subtest 'isa' => sub {
-    isa_ok $req, 'Nephia::Request';
+    isa_ok $req, 'PrimalNephia::Request';
     isa_ok $req, 'Plack::Request';
 };
 

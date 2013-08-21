@@ -1,4 +1,4 @@
-package Nephia::Plugin;
+package PrimalNephia::Plugin;
 use strict;
 use warnings;
 
@@ -9,24 +9,24 @@ __END__
 
 =head1 NAME 
 
-Nephia::Plugin - Documentation for Plugins
+PrimalNephia::Plugin - Documentation for Plugins
 
 =head1 USING PLUGINS
 
 You may use plugins as followings.
 
-  use Nephia plugins => ['Response::YAML', 'Auth::Twitter' => { consumer_key => ..., }];
+  use PrimalNephia plugins => ['Response::YAML', 'Auth::Twitter' => { consumer_key => ..., }];
 
 or
 
   BEGIN {
-      use Nephia;
+      use PrimalNephia;
       nephia_plugin 'Response::YAML', 'Response::XML';
   }
 
-=head1 HOW TO DEVELOP Nephia PLUGIN
+=head1 HOW TO DEVELOP PrimalNephia PLUGIN
 
-Basic rule is namespace of new module must begins in "Nephia::Plugin::".
+Basic rule is namespace of new module must begins in "PrimalNephia::Plugin::".
 
 If you want to export subroutines, those name must begin in lower alphabetic chars, and it must not be "import" and "load".
 
@@ -36,10 +36,10 @@ And, you can use context() function for set/get some state among request.
 
 For example.
 
-  package Nephia::Plugin::Bark;
+  package PrimalNephia::Plugin::Bark;
   use strict;
   use warnings;
-  use Nephia::Request;
+  use PrimalNephia::Request;
   
   our @EXPORT = qw/bark barkbark/;
 
@@ -100,7 +100,7 @@ For example.
 You can use plugin in above, as like followings.
 
   package Your::App;
-  use Nephia plugins => [Bark => {sound => 'Bark!'}];
+  use PrimalNephia plugins => [Bark => {sound => 'Bark!'}];
 
   path '/bark' => sub {
       bark; # 'Bark!'

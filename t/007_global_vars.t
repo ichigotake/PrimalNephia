@@ -3,11 +3,11 @@ use warnings;
 use Test::More;
 
 subtest normal => sub {
-    use Nephia::GlobalVars;
-    Nephia::GlobalVars->set( foo => 123, bar => { hoge => 'abc' } );
-    my $foo = Nephia::GlobalVars->get('foo');
-    my $bar = Nephia::GlobalVars->get('bar');
-    my @baz = Nephia::GlobalVars->get(qw/foo bar/);
+    use PrimalNephia::GlobalVars;
+    PrimalNephia::GlobalVars->set( foo => 123, bar => { hoge => 'abc' } );
+    my $foo = PrimalNephia::GlobalVars->get('foo');
+    my $bar = PrimalNephia::GlobalVars->get('bar');
+    my @baz = PrimalNephia::GlobalVars->get(qw/foo bar/);
     is( $foo, 123, 'simple scalar' );
     isa_ok( $bar, 'HASH' );
     is( $bar->{hoge}, 'abc', 'hash' );
@@ -16,10 +16,10 @@ subtest normal => sub {
 };
 
 subtest check_stored_as_singleton => sub {
-    use Nephia::GlobalVars;
-    my $foo = Nephia::GlobalVars->get('foo');
-    my $bar = Nephia::GlobalVars->get('bar');
-    my @baz = Nephia::GlobalVars->get(qw/foo bar/);
+    use PrimalNephia::GlobalVars;
+    my $foo = PrimalNephia::GlobalVars->get('foo');
+    my $bar = PrimalNephia::GlobalVars->get('bar');
+    my @baz = PrimalNephia::GlobalVars->get(qw/foo bar/);
     is( $foo, 123, 'simple scalar' );
     isa_ok( $bar, 'HASH' );
     is( $bar->{hoge}, 'abc', 'hash' );

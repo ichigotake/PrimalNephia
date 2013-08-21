@@ -1,4 +1,4 @@
-package Nephia::GlobalVars;
+package PrimalNephia::GlobalVars;
 
 use strict;
 use warnings;

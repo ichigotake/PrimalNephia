@@ -1,4 +1,4 @@
-package Nephia::PluginLoader;
+package PrimalNephia::PluginLoader;
 use strict;
 use warnings;
 use Module::Load ();
@@ -16,7 +16,7 @@ sub load {
 
 sub _normalize_plugin_name {
     local $_ = shift;
-    /^\+/ ? s/^\+// && $_ : "Nephia::Plugin::$_";
+    /^\+/ ? s/^\+// && $_ : "PrimalNephia::Plugin::$_";
 }
 
 sub _export_plugin_functions {
@@ -27,7 +27,7 @@ sub _export_plugin_functions {
         no strict   qw/refs subs/;
         no warnings qw/redefine prototype/;
 
-        *{$plugin.'::context'} = *Nephia::Core::context;
+        *{$plugin.'::context'} = *PrimalNephia::Core::context;
         *{$plugin.'::plugin_config'} = sub (;$) { $_[0] ? $opt->{$_[0]} : $opt };
         $plugin->import           if $plugin->can('import');
         $plugin->load($pkg, $opt) if $plugin->can('load');
@@ -43,16 +43,16 @@ sub _load_hook_point {
         no strict   qw/refs/;
         no warnings qw/redefine/;
         if (my $plugin_action = $plugin->can('before_action')) {
-            my $orig = Nephia::Core->can('before_action');
-            *Nephia::Core::before_action = sub {
+            my $orig = PrimalNephia::Core->can('before_action');
+            *PrimalNephia::Core::before_action = sub {
                 my ($env, $path_param, $action) = @_;
                 $plugin_action->($env, $path_param, $orig, $action);
             };
         }
         for my $func (qw/process_env process_response process_content/) {
             my $plugin_func           = $plugin->can($func) or next;
-            my $orig                  = Nephia::Core->can($func);
-            *{'Nephia::Core::'.$func} = sub { $plugin_func->($orig->(shift)) }; 
+            my $orig                  = PrimalNephia::Core->can($func);
+            *{'PrimalNephia::Core::'.$func} = sub { $plugin_func->($orig->(shift)) }; 
         }
     }
 }

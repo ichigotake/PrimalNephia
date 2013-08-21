@@ -1,4 +1,4 @@
-package Nephia::MetaTemplate;
+package PrimalNephia::MetaTemplate;
 use strict;
 use warnings;
 use utf8;
@@ -42,7 +42,7 @@ sub process {
 
 =head1 NAME
 
-Nephia::MetaTemplate - Meta Template Processor for Nephia::Setup flavors
+PrimalNephia::MetaTemplate - Meta Template Processor for PrimalNephia::Setup flavors
 
 =head1 SYNOPSIS
 
@@ -62,7 +62,7 @@ A template in your flavor.
 And, in your flavor class.
 
     my $meta_template = '<html>...'; # meta template string
-    my $mt = Nephia::MetaTemplate->new(
+    my $mt = PrimalNephia::MetaTemplate->new(
         tag           => '{{ ... }}',
         arrow         => '@',
         argument      => 'val:...',
@@ -87,7 +87,7 @@ Then, $template is like as following.
 
 =head1 DESCRIPTION
 
-Nephia::MetaTemplate is a Meta-Template Processor for helping you make your own nephia flavor.
+PrimalNephia::MetaTemplate is a Meta-Template Processor for helping you make your own nephia flavor.
 
 =head1 AUTHOR
 
